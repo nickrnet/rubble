@@ -3,7 +3,7 @@ Rubble is a take on a card game we call _Garbage_. It is played with 2-4 players
 
 # Documentation
 
-See [docs/Development.md](docs/Development.md) for how to contribute to this project.
+See [doc/Development.md](doc/Development.md) for how to contribute to this project.
 
 # Game Play
 
