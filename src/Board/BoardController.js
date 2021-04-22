@@ -96,6 +96,7 @@ export default function BoardController({ deck, discard, players }) {
         if (!player.card && gameDeck.cards.length > 0) {
             player.drawFromDeck(gameDeck);
             player.card.faceUp = true;
+            // TODO: Should we automatically place the card in the slot?
             setGameDeck({...gameDeck});
             setGamePlayers([...gamePlayers]);
         }
@@ -115,11 +116,14 @@ export default function BoardController({ deck, discard, players }) {
         if (!player.card) {
             let discardCard = discard.cards[discard.cards.length-1];
             let discardValue = discardCard.value;
-            if (discardValue <= player.slots && !player.cards[discardValue-1].faceUp) {
+            let hasKingInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 13 && player.cards[discardValue-1].faceUp;
+            let canDrawDiscard = discardValue <= player.slots && !player.cards[discardValue-1].faceUp;
+            if (hasKingInSlot || canDrawDiscard) {
                 player.drawFromDiscard(gameDiscard);
                 if (player.card) {
                     player.card.faceUp = true;
                 }
+                // TODO: Should we automatically place the card in the slot?
                 setGameDiscard({...gameDiscard});
                 setGamePlayers([...gamePlayers]);
             }
