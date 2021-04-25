@@ -30,9 +30,9 @@ export default function DeckView({ cards, drawFromDeckHandler }) {
             <Grid item>
                 <Typography variant="h6" component="h1" className={classes.title} gutterBottom>Deck</Typography>
             </Grid>
-            <Grid item onClick={ onCardClick }>
+            <Grid item>
                 { cards.length ? 
-                <IndividualCardBack /> :
+                <IndividualCardBack onClick={ onCardClick } /> :
                 <EmptyCardSlot />
                 }
             </Grid>

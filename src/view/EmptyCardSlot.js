@@ -8,23 +8,29 @@ const useStyles = makeStyles(
     (theme) => (
         {
             playingCardBorder: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110,
+                // minHeight: 170,
+                // maxHeight: 170,
+                // minWidth: 110,
+                // maxWidth: 110,
+                width: 115,
+                height: 167
             },
             playingCardContent: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110,
+                // minHeight: 170,
+                // maxHeight: 170,
+                // minWidth: 110,
+                // maxWidth: 110,
+                width: 115,
+                height: 167,
                 backgroundColor: '#61dafb',
             },
             playingCardEmptyContent: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110,
+                // minHeight: 170,
+                // maxHeight: 170,
+                // minWidth: 110,
+                // maxWidth: 110,
+                width: 115,
+                height: 167,
                 backgroundColor: 'lightGray',
             }
         }

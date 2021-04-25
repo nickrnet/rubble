@@ -22,7 +22,7 @@ export default function DiscardView ({ cards, drawFromDiscardHandler }) {
     let lastDiscard;
 
     if (card) {
-        lastDiscard = <Grid item key={`${card.value}_${card.suit}`}><IndividualCardFront card={card} /></Grid>
+        lastDiscard = <Grid item key={`${card.value}_${card.suit}`}><IndividualCardFront card={card} onClick={drawFromDiscardHandler} /></Grid>
     }
     else {
         lastDiscard = <Grid item><EmptyCardSlot /></Grid>;
@@ -33,7 +33,7 @@ export default function DiscardView ({ cards, drawFromDiscardHandler }) {
             <Grid item>
                 <Typography variant="h6" component="h1" className={classes.title} gutterBottom>Discard</Typography>
             </Grid>
-        <Grid item onClick={drawFromDiscardHandler}>
+        <Grid item>
             <Grid container direction="row" justify="center" alignItems="center" spacing={2}>
                 {
                     lastDiscard

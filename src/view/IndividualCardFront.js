@@ -1,54 +1,42 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Typography } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(
     (theme) => (
         {
-            playingCardBorder: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110,
-            },
-            playingCardContent: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110,
-            },
-            pos: {
-                marginBottom: 12,
+            playingCardArea: {
+                width: 115,
+                height: 167
             }
         }
     )
 );
 
-function getNameAbbreviation (card) {
-    if (typeof card.name !== 'string') return 'Mystery';
-    if ([2, 3, 4, 5, 6, 7, 8, 9, 10].includes(card.value)) {
-        return card.name;
+function getCardImage (card) {
+    let image = '';
+    if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(card.value)) {
+        image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}.png`;
     }
     else {
-        return card.name.charAt(0).toUpperCase();
+        image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}2.png`;
     }
-    
+    return image;
 }
 
-export default function IndividualCardFront ({ card }) {
+export default function IndividualCardFront ({ card, onClick }) {
     const classes = useStyles();
 
     return (
-        <Card raised={ true } className={ classes.playingCardBorder }>
-            <CardContent className={ classes.playingCardContent }>
-                <Typography variant="h5" component="h2">
-                    { getNameAbbreviation(card) }
-                </Typography>
-                <Typography className={ classes.pos } color="textSecondary">
-                    { card.suit }
-                </Typography>
-            </CardContent>
+        <Card raised={ true } onClick={onClick} >
+            <CardActionArea className={classes.playingCardArea}>
+                <CardMedia
+                    component="img"
+                    alt={`${card.name} of ${card.suit}`}
+                    image={`cards/${getCardImage(card)}`}
+                    title={`${card.name} of ${card.suit}`}/>
+            </CardActionArea>
         </Card>
     );
 }

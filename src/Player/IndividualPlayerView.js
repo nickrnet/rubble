@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, IconButton, Paper, Typography } from '@material-ui/core';
-import DeleteForever from '@material-ui/icons/DeleteForever';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import LocalPlay from '@material-ui/icons/LocalPlay';
 
 import EmptyCardSlot from '../view/EmptyCardSlot';
@@ -99,35 +98,16 @@ export default function IndividualPlayerView({ player, discardHandler, placeCard
                     <Grid item>
                         <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
                             { player.isTurn && <LocalPlay /> }
-                                {/* <EditAttributes />
-                                <Feedback />
-                                <Flare />
-                                <HowToReg />
-                                <ImportExport />
-                                <Input />
-                                <LocalPlay */}
                             {player.name}
                         </Typography>
                     </Grid>
                     <Grid item>
                         <Grid container direction="column" justify="center" alignItems="center" spacing={3}>
-                            {/* <Grid item>
-                                <Typography>Current Card</Typography>
-                            </Grid> */}
-                            <Grid item onClick={placeCard}>
+                            <Grid item>
                                 {
-                                    player.card ? <IndividualCard card={player.card} /> : <EmptyCardSlot />
+                                    player.card ? <IndividualCard card={player.card} onClick={ placeCard } /> : <EmptyCardSlot />
                                 }
                             </Grid>
-                            {/* <Grid item>
-                                <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
-                                    <Grid item>
-                                        <IconButton onClick={discard} disabled={!(player.card && player.card.value > 0)}>
-                                            <DeleteForever /> 
-                                        </IconButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid> */}
                         </Grid>
                     </Grid>
                     <Grid item>
