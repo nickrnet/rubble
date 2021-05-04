@@ -27,7 +27,7 @@ const useStyles = makeStyles(
     )
 );
 
-export default function BoardView({ players, deck, discard, autoPlay, drawFromDeckHandler, drawFromDiscardHandler, discardHandler, placeCardHandler, gameOver, winner }) {
+export default function BoardView({ players, deck, discard, drawFromDeckHandler, drawFromDiscardHandler, placeCardHandler, gameOver, winner }) {
     const classes = useStyles();
 
     return (
@@ -38,17 +38,14 @@ export default function BoardView({ players, deck, discard, autoPlay, drawFromDe
                     <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
                         Rubble
                     </Typography>
-                    <Button variant="contained" className={classes.buttonColor} onClick={autoPlay}>
-                        <Typography>Autoplay</Typography>
-                    </Button>
                 </Grid>
                 <Grid item>
                     <Grid container spacing={2} direction="row" justify="center" alignItems="center">
                         <Grid item>
-                            <IndividualPlayerView player={players[0]} discardHandler={discardHandler} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[0]} placeCardHandler={placeCardHandler}/>
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[1]} discardHandler={discardHandler} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[1]} placeCardHandler={placeCardHandler}/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -65,10 +62,10 @@ export default function BoardView({ players, deck, discard, autoPlay, drawFromDe
                 <Grid item>
                     <Grid container spacing={2} direction="row" justify="center" alignItems="center">
                         <Grid item>
-                            <IndividualPlayerView player={players[2]} discardHandler={discardHandler} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[2]} placeCardHandler={placeCardHandler}/>
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[3]} discardHandler={discardHandler} placeCardHandler={placeCardHandler} />
+                            <IndividualPlayerView player={players[3]} placeCardHandler={placeCardHandler} />
                         </Grid>
                     </Grid>
                 </Grid>

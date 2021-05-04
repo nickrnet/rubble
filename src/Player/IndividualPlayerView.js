@@ -10,8 +10,13 @@ import IndividualCard from '../view/IndividualCard';
 const useStyles = makeStyles(
     (theme) => (
         {
-            playerCard: {
-                padding: 5
+            activePlayerCard: {
+                padding: 5,
+                backgroundColor: "white"
+            },
+            inactivePlayerCard: {
+                padding: 5,
+                backgroundColor: "lightgray"
             },
             playingCardContent: {
                 minHeight: 170,
@@ -76,14 +81,8 @@ function bottomRowSlots(player) {
     );
 }
 
-export default function IndividualPlayerView({ player, discardHandler, placeCardHandler }) {
+export default function IndividualPlayerView({ player, placeCardHandler }) {
     const classes = useStyles();
-
-    function discard() {
-        if (player.card && player.card.value > 0) {
-            discardHandler(player);
-        }
-    }
 
     function placeCard() {
         if (player.card && player.card.value > 0) {
@@ -93,7 +92,7 @@ export default function IndividualPlayerView({ player, discardHandler, placeCard
 
     return (
         <Grid item>
-            <Paper className={classes.playerCard}>
+            <Paper className={player.isTurn ? classes.activePlayerCard : classes.inactivePlayerCard}>
                 <Grid container direction="column" justify="center" alignItems="center" spacing={3}>
                     <Grid item>
                         <Typography variant="h5" component="h1" className={classes.title} gutterBottom>

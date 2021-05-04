@@ -41,6 +41,10 @@ export default function BoardController({ deck, discard, players }) {
             winner.current = "No one";
             gameOver.current = true;
         }
+
+        if (!gameOver.current) {
+            takeTurn();
+        }
     }
 
     function getCurrentPlayer() {
@@ -60,27 +64,15 @@ export default function BoardController({ deck, discard, players }) {
 
         return foundPlayer;
     }
-    
-    function getPlayerByName(playerName) {
-        let foundPlayer = null;
-        for (let i = 0; i < gamePlayers.length; i++) {
-            let player = gamePlayers[i];
-            if (player.name === playerName) {
-                foundPlayer = i;
-            }
-        }
-        return foundPlayer;
-    }
 
     function discardCard(player) {
-        if (typeof player === 'undefined' || !player.name) {
-            player = gamePlayers[getCurrentPlayer()];
-        }
+        let currentPlayer = getCurrentPlayer();
+        player = gamePlayers[currentPlayer];
         player.discardCard(gameDiscard);
         player.isTurn = false;
         
-        let nextPlayer = getPlayerByName(player.name) + 1;
-        if (nextPlayer === gamePlayers.length) {
+        let nextPlayer = currentPlayer + 1;
+        if (nextPlayer >= gamePlayers.length) {
             nextPlayer = 0;
         }
         gamePlayers[nextPlayer].isTurn = true;
@@ -161,17 +153,10 @@ export default function BoardController({ deck, discard, players }) {
         }
     }
 
-    function autoPlay() {
-        while (!gameOver.current) {
-            takeTurn();
-            checkGameState();
-        }
-    }
-
-    function takeTurn () {
+    function takeTurn() {
         let player = gamePlayers[getCurrentPlayer()];
         
-        while (player && player.isTurn) {
+        while (player && player.isTurn && player.isAuto) {
             if (player.card && player.card.value > 0) {
                 placeCardInSlot(player);
             }
@@ -202,10 +187,8 @@ export default function BoardController({ deck, discard, players }) {
         players={gamePlayers}
         deck={gameDeck}
         discard={gameDiscard}
-        autoPlay={autoPlay}
         drawFromDeckHandler={drawFromDeck}
         drawFromDiscardHandler={drawFromDiscard}
-        discardHandler={discardCard} 
         placeCardHandler={placeCardInSlot}
         gameOver={gameOver.current}
         winner={winner.current} />;

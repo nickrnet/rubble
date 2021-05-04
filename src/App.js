@@ -10,9 +10,9 @@ const deck = new Deck();
 const discard = new Discard();
 const players = [
     new Player({ name: 'Neo', isTurn: true }),
-    new Player({ name: 'Morpheus', slots: 8 }),
-    new Player({ name: 'Trinity', slots: 5 }),
-    new Player({ name: 'Cypher', slots: 2 })
+    new Player({ name: 'Morpheus', slots: 8, isAuto: true }),
+    new Player({ name: 'Trinity', slots: 5, isAuto: true }),
+    new Player({ name: 'Cypher', slots: 2, isAuto: true })
 ];
 
 deck.shuffle();

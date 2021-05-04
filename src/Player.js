@@ -20,6 +20,7 @@ class Player {
             this.cards = [];
             this.slots = properties.slots || 10;
             this.isTurn = properties.isTurn || false;
+            this.isAuto = properties.isAuto || false;
 
             if (!this.name) {
                 throw `Invalid name for player specified: ${this.name}`;
