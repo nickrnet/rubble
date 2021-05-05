@@ -20,13 +20,17 @@ export default function BoardController({ deck, discard, players }) {
             let faceUpCards = 0;
             let player = gamePlayers[i];
             for (let c = 0; c < player.cards.length; c++) {
+                // Queens are not allowed to be shown and win
                 if (player.cards[c].faceUp) {
-                    faceUpCards = faceUpCards + 1;
+                    if (player.cards[c].value != 12) {
+                        faceUpCards = faceUpCards + 1;
+                    }
                 }
             }
             if (faceUpCards === player.slots) {
                 someoneWon = true;
                 gameWinner = player.name;
+                // player.slots--;
                 player.isTurn = false;
                 break;
             }
@@ -130,27 +134,35 @@ export default function BoardController({ deck, discard, players }) {
             // Kings are wild
             if (player.card.value === 13) {
                 player.placeCardInSlot();
-            }
-            // Queens allow steals
-            else if (player.card.value === 12) {
-                // Discard for now
+            } else if (player.card.value === 12) {
+                // Queens allow steals
                 discardCard(player);
-            }
-            else if (player.card.value > 10) {
+            } else if (player.card.value > 10) {
                 discardCard(player);
-            }
-            else if (player.card.value > player.slots) {
+            } else if (player.card.value > player.slots) {
                 discardCard(player);
-            }
-            else if (player.cards[player.card.value - 1].value === player.card.value && player.cards[player.card.value - 1].faceUp) {
+            } else if (player.cards[player.card.value - 1].value === player.card.value && player.cards[player.card.value - 1].faceUp) {
                 discardCard(player);
-            }
-            else {
+            } else {
                 player.placeCardInSlot();
             }
             setGamePlayers([...gamePlayers]);
             checkGameState();
         }
+    }
+
+    function stealCard(targetPlayer, slot) {
+        let currentPlayer = gamePlayers[getCurrentPlayer()];
+        if (currentPlayer.card && currentPlayer.card.value === 12) {
+            console.log(`Trying to steal the ${slot} slot from ${targetPlayer.name}.`);
+            let targetCard = targetPlayer.cards[slot];
+            if (targetCard.faceUp && targetCard.canBeStolen) {
+                let tempCard = {...targetCard};
+                targetPlayer.cards[slot] = {...currentPlayer.card};
+                currentPlayer.card = {...tempCard};
+            }
+        }
+        setGamePlayers([...gamePlayers]);
     }
 
     function takeTurn() {
@@ -190,6 +202,7 @@ export default function BoardController({ deck, discard, players }) {
         drawFromDeckHandler={drawFromDeck}
         drawFromDiscardHandler={drawFromDiscard}
         placeCardHandler={placeCardInSlot}
+        stealCardHandler={stealCard}
         gameOver={gameOver.current}
         winner={winner.current} />;
 }

@@ -29,7 +29,7 @@ export default function IndividualCardFront ({ card, onClick }) {
     const classes = useStyles();
 
     return (
-        <Card raised={ true } onClick={onClick} >
+        <Card raised={ card.canBeStolen } onClick={ onClick } >
             <CardActionArea className={classes.playingCardArea}>
                 <CardMedia
                     component="img"

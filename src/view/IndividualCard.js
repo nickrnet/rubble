@@ -3,10 +3,15 @@ import React from 'react';
 import IndividualCardFront from './IndividualCardFront';
 import IndividualCardBack from './IndividualCardBack';
 
-export default function IndividualCard (props) {
-    if (props.card.faceUp) {
+export default function IndividualCard ({ card, slot, onClick }) {
+
+    function stealCard() {
+        onClick(slot);
+    }
+
+    if (card.faceUp) {
         return (
-            <IndividualCardFront card={props.card} onClick={ props.onClick } />
+            <IndividualCardFront card={card} onClick={ stealCard }/>
         );
     }
     else {

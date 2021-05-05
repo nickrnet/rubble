@@ -32,14 +32,14 @@ const useStyles = makeStyles(
     )
 );
 
-function topRowSlots(player) {
+function topRowSlots(player, stealCardHandler) {
     let slotCards = [];
 
     for (let i = 1; i <= 5; i++) {
         let key = `${player.name}_${i}`;
         if (i <= player.slots) {
             if (player.cards && player.cards[i - 1]) {
-                slotCards.push(<Grid item key={key}><IndividualCard card={player.cards[i - 1]} /></Grid>);
+                slotCards.push(<Grid item key={key}><IndividualCard card={player.cards[i - 1]} onClick={ stealCardHandler } slot={ i - 1 } /></Grid>);
             }
             else {
                 slotCards.push(<Grid item key={key}><EmptyCardSlot empty={false} /></Grid>);
@@ -56,14 +56,14 @@ function topRowSlots(player) {
     );
 }
 
-function bottomRowSlots(player) {
+function bottomRowSlots(player, stealCardHandler) {
     let slotCards = [];
 
     for (let i = 6; i <= 10; i++) {
         let key = `${player.name}_${i}`;
         if (i <= player.slots) {
             if (player.cards && player.cards[i - 1]) {
-                slotCards.push(<Grid item key={key}><IndividualCard card={player.cards[i - 1]} /></Grid>);
+                slotCards.push(<Grid item key={key}><IndividualCard card={player.cards[i - 1]} onClick={ stealCardHandler } slot={ i - 1 } /></Grid>);
             }
             else {
                 slotCards.push(<Grid item key={key}><EmptyCardSlot empty={false} /></Grid>);
@@ -81,13 +81,17 @@ function bottomRowSlots(player) {
     );
 }
 
-export default function IndividualPlayerView({ player, placeCardHandler }) {
+export default function IndividualPlayerView({ player, placeCardHandler, stealCardHandler }) {
     const classes = useStyles();
 
     function placeCard() {
         if (player.card && player.card.value > 0) {
             placeCardHandler(player);
         }
+    }
+
+    function stealCard(slot) {
+        stealCardHandler(player, slot);
     }
 
     return (
@@ -110,10 +114,10 @@ export default function IndividualPlayerView({ player, placeCardHandler }) {
                         </Grid>
                     </Grid>
                     <Grid item>
-                        {topRowSlots(player)}
+                        {topRowSlots(player, stealCard)}
                     </Grid>
                     <Grid item>
-                        {bottomRowSlots(player)}
+                        {bottomRowSlots(player, stealCard)}
                     </Grid>
                 </Grid>
             </Paper>

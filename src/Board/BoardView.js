@@ -27,7 +27,7 @@ const useStyles = makeStyles(
     )
 );
 
-export default function BoardView({ players, deck, discard, drawFromDeckHandler, drawFromDiscardHandler, placeCardHandler, gameOver, winner }) {
+export default function BoardView({ players, deck, discard, drawFromDeckHandler, drawFromDiscardHandler, placeCardHandler, stealCardHandler, gameOver, winner }) {
     const classes = useStyles();
 
     return (
@@ -42,10 +42,10 @@ export default function BoardView({ players, deck, discard, drawFromDeckHandler,
                 <Grid item>
                     <Grid container spacing={2} direction="row" justify="center" alignItems="center">
                         <Grid item>
-                            <IndividualPlayerView player={players[0]} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[0]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[1]} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[1]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -62,10 +62,10 @@ export default function BoardView({ players, deck, discard, drawFromDeckHandler,
                 <Grid item>
                     <Grid container spacing={2} direction="row" justify="center" alignItems="center">
                         <Grid item>
-                            <IndividualPlayerView player={players[2]} placeCardHandler={placeCardHandler}/>
+                            <IndividualPlayerView player={players[2]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[3]} placeCardHandler={placeCardHandler} />
+                            <IndividualPlayerView player={players[3]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
                         </Grid>
                     </Grid>
                 </Grid>

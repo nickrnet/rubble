@@ -18,7 +18,6 @@
             this.suit = properties.suit || "";
             this.value = properties.value || 0;
             this.faceUp = properties.faceUp || false;
-            this.slot = 0;
             
             if (!this.value || typeof this.value !== 'number') {
                 throw `Invalid card value requested: ${this.value}`;
@@ -26,6 +25,7 @@
 
             if (this.value === 1) {
                 this.name = 'Ace';
+                this.canBeStolen = true;
             } else if (this.value === 11) {
                 this.name = 'Jack';
             } else if (this.value === 12) {
@@ -36,6 +36,7 @@
                 throw `Invalid card value.`;
             } else {
                 this.name = String(this.value);
+                this.canBeStolen = true;
             }
         } catch (err) {
             throw err;

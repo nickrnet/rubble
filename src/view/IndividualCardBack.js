@@ -24,7 +24,7 @@ export default function IndividualCardBack ({ onClick }) {
     const classes = useStyles();
 
     return (
-        <Card raised={ true } className={ classes.playingCardArea } onClick={onClick} >
+        <Card raised={ false } className={ classes.playingCardArea } onClick={onClick} >
             <CardActionArea>
                 <CardMedia
                     className={classes.playingCardMedia}
