@@ -113,8 +113,9 @@ export default function BoardController({ deck, discard, players }) {
             let discardCard = discard.cards[discard.cards.length-1];
             let discardValue = discardCard.value;
             let hasKingInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 13 && player.cards[discardValue-1].faceUp;
+            let hasQueenInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 12 && player.cards[discardValue-1].faceUp;
             let canDrawDiscard = discardValue <= player.slots && !player.cards[discardValue-1].faceUp;
-            if (hasKingInSlot || canDrawDiscard) {
+            if (hasKingInSlot || hasQueenInSlot || canDrawDiscard) {
                 player.drawFromDiscard(gameDiscard);
                 if (player.card) {
                     player.card.faceUp = true;
@@ -152,24 +153,53 @@ export default function BoardController({ deck, discard, players }) {
     }
 
     function stealCard(targetPlayer, slot) {
+        let stoleACard = false;
         let currentPlayer = gamePlayers[getCurrentPlayer()];
+        if (targetPlayer.name === currentPlayer.name) {}
         if (currentPlayer.card && currentPlayer.card.value === 12) {
-            console.log(`Trying to steal the ${slot} slot from ${targetPlayer.name}.`);
             let targetCard = targetPlayer.cards[slot];
-            if (targetCard.faceUp && targetCard.canBeStolen) {
+            if (targetCard && targetCard.faceUp && targetCard.canBeStolen) {
                 let tempCard = {...targetCard};
                 targetPlayer.cards[slot] = {...currentPlayer.card};
                 currentPlayer.card = {...tempCard};
+                stoleACard = true;
             }
         }
         setGamePlayers([...gamePlayers]);
+        return stoleACard;
     }
 
     function takeTurn() {
         let player = gamePlayers[getCurrentPlayer()];
         
         while (player && player.isTurn && player.isAuto) {
-            if (player.card && player.card.value > 0) {
+            if (player.card && player.card.value == 12) {
+                // Player can steal from another
+                let slot, stoleACard;
+                for (let c = 0; c < player.cards.length; c++) {
+                    // Find first slot facedown
+                    if (!player.cards[c].faceUp) {
+                        slot = c;
+                    }
+                    // Find a King
+                    else if (player.cards[c].value == 13) {
+                        slot = c;
+                    }
+                    if (slot) {
+                        for (let p = 0; p < gamePlayers.length; p++) {
+                            stoleACard = stealCard(gamePlayers[p], slot);
+                            if (stoleACard) {
+                                break;
+                            }
+                        }
+                        if (stoleACard) {
+                            break;
+                        }
+                    }
+                }
+                placeCardInSlot(player);
+            }
+            else if (player.card && player.card.value > 0) {
                 placeCardInSlot(player);
             }
             else if (discard.cards.length > 0) {

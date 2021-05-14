@@ -55,16 +55,29 @@ class Player {
      * Places the player's card in the appropriate slot.
      */
     placeCardInSlot = () => {
-        // TODO: Handle Queens
+        let swapped = false;
         if (this.card.value === 13) {
-            // Find the first face down card. This could be smarter or more aggressive.
             for (let c = 0; c < this.cards.length; c++) {
-                if (!this.cards[c].faceUp) {
+                // Swap Queens first
+                if (this.cards[c].faceUp && this.cards[c].value == 12) {
                     let slotCard = {...this.cards[c]};
                     this.cards[c] = {...this.card};
                     this.card = slotCard;
-                    this.card.faceUp = true;
+                    swapped = true;
                     break;
+                }
+            }
+            if (!swapped) {
+                for (let c = 0; c < this.cards.length; c++) {
+                    // Find the first face down card. This could be smarter or more aggressive.
+                    if (!this.cards[c].faceUp) {
+                        let slotCard = {...this.cards[c]};
+                        this.cards[c] = {...this.card};
+                        this.card = slotCard;
+                        this.card.faceUp = true;
+                        swapped = true;
+                        break;
+                    }
                 }
             }
         }
