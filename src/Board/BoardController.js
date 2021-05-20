@@ -205,7 +205,21 @@ export default function BoardController({ deck, discard, players }) {
             else if (discard.cards.length > 0) {
                 let discardCard = discard.cards[discard.cards.length-1];
                 let discardValue = discardCard.value;
-                if (discardValue <= player.slots && !player.cards[discardValue-1].faceUp) {
+                let hasQueen = false;
+                let queenSlot;
+                // Check for a Queen
+                for (let c = 0; c < player.cards.length; c++) {
+                    if (player.cards[c].value == 12) {
+                        hasQueen = true;
+                        queenSlot = c;
+                        break;
+                    }
+                }
+                if (hasQueen && queenSlot && discardValue !== 12 && player.cards[queenSlot].value === discardValue) {
+                    drawFromDiscard(player);
+                    placeCardInSlot(player);
+                }
+                else if (discardValue <= player.slots && !player.cards[discardValue-1].faceUp) {
                     drawFromDiscard(player);
                     placeCardInSlot(player);
                 }
