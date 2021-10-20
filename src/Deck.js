@@ -3,48 +3,48 @@ import Suit from './Suit.js';
 /**
  * A playing card deck object.
  * @class Deck
- * @param {object} properties an object containing the properties to use for this deck.
  * @property cards {array} the cards of the deck
  */
  export default class Deck {
-    constructor (properties) {
-        try {
-            let cards = [];
+    cards = [];
 
-            if (properties && properties.cards && properties.cards.length > 0) {
-                this.cards = properties.cards;
-            }
-            else {
-                cards = [];
-                this.cards = cards.concat(new Suit({name: "clubs"}).cards, new Suit({name: "diamonds"}).cards, new Suit({name: "hearts"}).cards, new Suit({name: "spades"}).cards);
-            }
-            
-        } catch (err) {
-            // console.error(err, properties);
-            throw err;
-        }
+    constructor () {
+        this.init();
     }
 
-    /**
-     * Draws the top card from this deck.
-     * @returns {Card}
-     */
-    draw = () => {
-        if (this.cards) {
-            return this.cards.shift();
-        } else {
-            console.error(`Tried to draw from deck when no cards available.`);
-            console.trace();
-        }
+    init () {
+        this.cards = [].concat(new Suit("clubs").cards, new Suit("diamonds").cards, new Suit("hearts").cards, new Suit("spades").cards);
     }
+}
 
-    /**
-     * Shuffles this deck.
-     * @param {number} times The number of times to shuffle the deck.
-     * @returns {array} cards The shuffled deck of cards.
-     */
-    shuffle = (times = 1) => {
+/**
+ * Draws the top card from this deck.
+ * @returns {Card}
+ */
+ Deck.prototype.draw = function () {
+    if (this.cards) {
+        return this.cards.shift();
+    } else {
+        console.error(`Tried to draw from deck when no cards available.`);
+        console.trace();
+    }
+}
+
+/**
+ * Resets this deck to 52 cards, unshuffled.
+ */
+Deck.prototype.reset = function () {
+    this.init();
+}
+
+/**
+ * Shuffles this deck.
+ * @param {number} times The number of times to shuffle the deck.
+ * @returns {array} cards The shuffled deck of cards.
+ */
+Deck.prototype.shuffle = function (times = 7) {
         // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
+        console.log(`Shuffling the deck...`);
         let card = {},
             i, rando;
         for (let time = 1; time <= times; time++) {
@@ -55,14 +55,9 @@ import Suit from './Suit.js';
                 this.cards[rando] = card;
             }
         }
-        return this.cards;
-    }
+        console.log(`Done shuffling the deck.`);
 }
 
 Deck.prototype.toString = function () {
     return JSON.stringify(this);
-}
-
-Deck.prototype.cards = function () {
-    return this.cards;
 }

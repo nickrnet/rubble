@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 
 import DeckController from '../Deck/DeckController';
 import DiscardController from '../Discard/DiscardController';
@@ -27,16 +27,33 @@ const useStyles = makeStyles(
     )
 );
 
-export default function BoardView({ players, deck, discard, drawFromDeckHandler, drawFromDiscardHandler, placeCardHandler, stealCardHandler, gameOver, winner }) {
+export default function BoardView(
+    {
+        players,
+        deck,
+        discard,
+        rounds,
+        drawFromDeckHandler,
+        drawFromDiscardHandler,
+        placeCardHandler,
+        stealCardHandler,
+        newGameHandler,
+        roundOver,
+        setRoundOver,
+        roundWinner,
+        gameOver,
+        gameWinner
+    }
+) {
     const classes = useStyles();
 
     return (
         <Paper elevation={3} className={classes.gameBoard}>
-            <Winner gameOver={gameOver} winner={winner} />
+            <Winner gameOver={gameOver} gameWinner={gameWinner} roundOver={roundOver} roundWinner={roundWinner} setRoundOver={setRoundOver} newGameHandler={newGameHandler} />
             <Grid container direction="column" justify="center" alignItems="center" spacing={3}>
                 <Grid item>
                     <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
-                        Rubble
+                        Round {rounds}
                     </Typography>
                 </Grid>
                 <Grid item>

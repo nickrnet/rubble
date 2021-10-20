@@ -6,7 +6,7 @@ import { Grid, Typography } from '@material-ui/core';
 import IndividualCardBack from '../view/IndividualCardBack';
 import EmptyCardSlot from '../view/EmptyCardSlot';
 
-const useStyles = makeStyles(
+const useStyles = makeStyles (
     (theme) => (
         {
             title: {
@@ -16,7 +16,12 @@ const useStyles = makeStyles(
     )
 );
 
-export default function DeckView({ cards, drawFromDeckHandler }) {
+export default function DeckView (
+    {
+        cards,
+        drawFromDeckHandler
+    }
+) {
     const classes = useStyles();
 
     function onCardClick () {
@@ -26,9 +31,9 @@ export default function DeckView({ cards, drawFromDeckHandler }) {
     }
 
     return (
-        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={2}>
+        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={ 2 }>
             <Grid item>
-                <Typography variant="h6" component="h1" className={classes.title} gutterBottom>Deck</Typography>
+                <Typography variant="h6" component="h1" className={ classes.title } gutterBottom>Deck</Typography>
             </Grid>
             <Grid item>
                 { cards.length ? 

@@ -8,50 +8,47 @@
  * @property faceUp {boolean} whether or not the card is face up.
  */
  class Card {
-    constructor (properties) {
-        try {
-            if (!properties) {
-                properties = {};
-            }
-            
-            this.name = properties.name || "";
-            this.suit = properties.suit || "";
-            this.value = properties.value || 0;
-            this.faceUp = properties.faceUp || false;
-            
-            if (!this.value || typeof this.value !== 'number') {
-                throw `Invalid card value requested: ${this.value}`;
-            }
+    name = "";
+    suit = ""
+    value = 0;
+    faceUp = false;
 
-            if (this.value === 1) {
-                this.name = 'Ace';
-                this.canBeStolen = true;
-            } else if (this.value === 11) {
-                this.name = 'Jack';
-            } else if (this.value === 12) {
-                this.name = 'Queen';
-            } else if (this.value === 13) {
-                this.name = 'King';
-            } else if (! [2, 3, 4, 5, 6, 7, 8, 9, 10].includes(this.value)) {
-                throw `Invalid card value.`;
-            } else {
-                this.name = String(this.value);
-                this.canBeStolen = true;
-            }
-        } catch (err) {
-            throw err;
+    constructor (suit, value) {
+        this.name = "";
+        this.suit = suit;
+        this.value = value;
+        this.faceUp = false;
+        
+        if (!this.value || typeof this.value !== 'number') {
+            throw `Invalid card value requested: ${this.value}`;
+        }
+
+        if (this.value === 1) {
+            this.name = 'Ace';
+            this.canBeStolen = true;
+        } else if (this.value === 11) {
+            this.name = 'Jack';
+        } else if (this.value === 12) {
+            this.name = 'Queen';
+        } else if (this.value === 13) {
+            this.name = 'King';
+        } else if (! [2, 3, 4, 5, 6, 7, 8, 9, 10].includes(this.value)) {
+            throw `Invalid card value.`;
+        } else {
+            this.name = String(this.value);
+            this.canBeStolen = true;
         }
     }
+}
 
-    /**
-     * Flips a card.
-     */
-    flip = () => {
-        if (this.faceUp) {
-            this.faceUp = false;
-        } else {
-            this.faceUp = true;
-        }
+/**
+ * Flips a card.
+ */
+Card.prototype.flip = function () {
+    if (this.faceUp) {
+        this.faceUp = false;
+    } else {
+        this.faceUp = true;
     }
 }
 

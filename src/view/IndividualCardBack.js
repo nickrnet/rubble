@@ -7,12 +7,10 @@ const useStyles = makeStyles(
     (theme) => (
         {
             playingCardArea: {
-                width: 115,
-                height: 167
+                width: 90,
+                height: 130
             },
             playingCardMedia: {
-                // width: 115,
-                // height: 167,
                 paddingTop: '25%',
                 paddingBottom: '25%'
             }

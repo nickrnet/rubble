@@ -1,24 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import BoardView from './BoardView';
 
-export default function BoardController({ deck, discard, players }) {
-    const [gameDeck, setGameDeck] = useState(deck);
-    const [gameDiscard, setGameDiscard] = useState(discard);
-    const [gamePlayers, setGamePlayers] = useState(players);
-    const gameOver = useRef(false);
-    const winner = useRef('');
-
+export default function BoardController(
+    {
+        deck,
+        setDeck,
+        discard,
+        setDiscard,
+        players,
+        setPlayers,
+        newGameHandler,
+        rounds,
+        setRounds,
+        roundOver,
+        setRoundOver,
+        roundWinner,
+        setRoundWinner,
+        gameOver,
+        setGameOver,
+        gameWinner,
+        setGameWinner
+    }
+) {
     useEffect(() => {
+        console.log('Something rerendered the BoardController.');
         checkGameState();
     });
 
     function checkGameState() {
         let someoneWon = false;
         let gameWinner = "";
-        for (let i = 0; i < gamePlayers.length; i++) {
+
+        for (let i = 0; i < players.length; i++) {
             let faceUpCards = 0;
-            let player = gamePlayers[i];
+            let player = players[i];
             for (let c = 0; c < player.cards.length; c++) {
                 // Queens are not allowed to be shown and win
                 if (player.cards[c].faceUp) {
@@ -30,36 +46,36 @@ export default function BoardController({ deck, discard, players }) {
             if (faceUpCards === player.slots) {
                 someoneWon = true;
                 gameWinner = player.name;
-                // player.slots--;
                 player.isTurn = false;
+                player.slots--;
                 break;
             }
         }
         
         if (someoneWon) {
-            winner.current = gameWinner;
-            gameOver.current = someoneWon;
+            setRoundWinner(gameWinner);
+            setRoundOver(true);
         }
 
-        if (gameDeck.cards.length === 0) {
-            winner.current = "No one";
-            gameOver.current = true;
+        if (deck.cards.length === 0) {
+            setRoundWinner('No one');
+            setRoundOver(true);
         }
 
-        if (!gameOver.current) {
+        if (!roundOver) {
             takeTurn();
         }
     }
 
     function getCurrentPlayer() {
         let foundPlayer = null;
-        for (let i = 0; i < gamePlayers.length; i++) {
-            let player = gamePlayers[i];
+        for (let i = 0; i < players.length; i++) {
+            let player = players[i];
             if (player.isTurn) {
                 foundPlayer = i;
             }
         }
-        if (foundPlayer > gamePlayers.length) {
+        if (foundPlayer > players.length) {
             foundPlayer = 0;
         }
         if (foundPlayer === null) {
@@ -70,43 +86,44 @@ export default function BoardController({ deck, discard, players }) {
     }
 
     function discardCard(player) {
+        if (typeof player === 'undefined' || !player.name) {
+            player = players[getCurrentPlayer()];
+        }
+
         let currentPlayer = getCurrentPlayer();
-        player = gamePlayers[currentPlayer];
-        player.discardCard(gameDiscard);
-        player.isTurn = false;
+        
+        player.discardCard(discard);
+        setDiscard(discard);
         
         let nextPlayer = currentPlayer + 1;
-        if (nextPlayer >= gamePlayers.length) {
+        if (nextPlayer >= players.length) {
             nextPlayer = 0;
         }
-        gamePlayers[nextPlayer].isTurn = true;
-        setGameDiscard({...gameDiscard});
-        setGamePlayers([...gamePlayers]);
-        checkGameState();
+        players[nextPlayer].isTurn = true;
+        setPlayers([...players]);
+        // checkGameState();
     }
 
     function drawFromDeck(player) {
         if (typeof player === 'undefined' || !player.name) {
-            player = gamePlayers[getCurrentPlayer()];
+            player = players[getCurrentPlayer()];
         }
-        if (!player.card && gameDeck.cards.length > 0) {
-            player.drawFromDeck(gameDeck);
+        if (!player.card && deck.cards.length > 0) {
+            player.drawFromDeck(deck);
             player.card.faceUp = true;
-            // TODO: Should we automatically place the card in the slot?
-            setGameDeck({...gameDeck});
-            setGamePlayers([...gamePlayers]);
         }
-        else if (gameDeck.cards.length === 0) {
-            setGameDeck({...deck});
-            setGamePlayers([...gamePlayers]);
-            winner.current = "No one";
-            gameOver.current = true;
+        else if (deck.cards.length === 0) {
+            setGameWinner('No one');
+            setGameOver(true);
         }
+
+        setDeck(deck);
+        setPlayers([...players]);
     }
     
     function drawFromDiscard(player) {
         if (typeof player === 'undefined' || !player.name) {
-            player = gamePlayers[getCurrentPlayer()];
+            player = players[getCurrentPlayer()];
         }
 
         if (!player.card) {
@@ -116,20 +133,20 @@ export default function BoardController({ deck, discard, players }) {
             let hasQueenInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 12 && player.cards[discardValue-1].faceUp;
             let canDrawDiscard = discardValue <= player.slots && !player.cards[discardValue-1].faceUp;
             if (hasKingInSlot || hasQueenInSlot || canDrawDiscard) {
-                player.drawFromDiscard(gameDiscard);
+                player.drawFromDiscard(discard);
                 if (player.card) {
                     player.card.faceUp = true;
                 }
                 // TODO: Should we automatically place the card in the slot?
-                setGameDiscard({...gameDiscard});
-                setGamePlayers([...gamePlayers]);
+                setDiscard(discard);
+                setPlayers([...players]);
             }
         }
     }
 
     function placeCardInSlot(player) {
         if (typeof player === 'undefined' || !player.name) {
-            player = gamePlayers[getCurrentPlayer()];
+            player = players[getCurrentPlayer()];
         }
         if (player.card) {
             // Kings are wild
@@ -147,14 +164,14 @@ export default function BoardController({ deck, discard, players }) {
             } else {
                 player.placeCardInSlot();
             }
-            setGamePlayers([...gamePlayers]);
-            checkGameState();
+            setPlayers([...players]);
+            // checkGameState();
         }
     }
 
     function stealCard(targetPlayer, slot) {
         let stoleACard = false;
-        let currentPlayer = gamePlayers[getCurrentPlayer()];
+        let currentPlayer = players[getCurrentPlayer()];
         if (targetPlayer.name === currentPlayer.name) {}
         if (currentPlayer.card && currentPlayer.card.value === 12) {
             let targetCard = targetPlayer.cards[slot];
@@ -165,12 +182,12 @@ export default function BoardController({ deck, discard, players }) {
                 stoleACard = true;
             }
         }
-        setGamePlayers([...gamePlayers]);
+        setPlayers([...players]);
         return stoleACard;
     }
 
     function takeTurn() {
-        let player = gamePlayers[getCurrentPlayer()];
+        let player = players[getCurrentPlayer()];
         
         while (player && player.isTurn && player.isAuto) {
             if (player.card && player.card.value == 12) {
@@ -186,8 +203,8 @@ export default function BoardController({ deck, discard, players }) {
                         slot = c;
                     }
                     if (slot) {
-                        for (let p = 0; p < gamePlayers.length; p++) {
-                            stoleACard = stealCard(gamePlayers[p], slot);
+                        for (let p = 0; p < players.length; p++) {
+                            stoleACard = stealCard(players[p], slot);
                             if (stoleACard) {
                                 break;
                             }
@@ -209,13 +226,13 @@ export default function BoardController({ deck, discard, players }) {
                 let queenSlot;
                 // Check for a Queen
                 for (let c = 0; c < player.cards.length; c++) {
-                    if (player.cards[c].value == 12) {
+                    if (player.cards[c].faceUp && player.cards[c].value == 12) {
                         hasQueen = true;
                         queenSlot = c;
                         break;
                     }
                 }
-                if (hasQueen && queenSlot && discardValue !== 12 && player.cards[queenSlot].value === discardValue) {
+                if (hasQueen && queenSlot && discardValue < 11 && player.cards[queenSlot].value === discardValue) {
                     drawFromDiscard(player);
                     placeCardInSlot(player);
                 }
@@ -223,13 +240,13 @@ export default function BoardController({ deck, discard, players }) {
                     drawFromDiscard(player);
                     placeCardInSlot(player);
                 }
-                else if (gameDeck.cards.length > 0) {
+                else if (deck.cards.length > 0) {
                     drawFromDeck(player);
                     placeCardInSlot(player);
                 }
                 else {
                     player.isTurn = false;
-                    setGamePlayers([...gamePlayers]);
+                    setPlayers([...players]);
                 }
             }
             else {
@@ -240,13 +257,26 @@ export default function BoardController({ deck, discard, players }) {
     }
 
     return <BoardView
-        players={gamePlayers}
-        deck={gameDeck}
-        discard={gameDiscard}
+        players={players}
+        setPlayers={setPlayers}
+        deck={deck}
+        setDeck={setDeck}
+        discard={discard}
+        setDiscard={setDiscard}
+        rounds={rounds}
+        setRounds={setRounds}
+        roundOver={roundOver}
+        setRoundOver={setRoundOver}
+        roundWinner={roundWinner}
+        setRoundWinner={setRoundWinner}
+        gameOver={gameOver}
+        setGameOver={setGameOver}
+        gameWinner={gameWinner}
+        setGameWinner={setGameWinner}
         drawFromDeckHandler={drawFromDeck}
         drawFromDiscardHandler={drawFromDiscard}
         placeCardHandler={placeCardInSlot}
         stealCardHandler={stealCard}
-        gameOver={gameOver.current}
-        winner={winner.current} />;
+        newGameHandler={newGameHandler}
+    />;
 }

@@ -12,17 +12,17 @@ const useStyles = makeStyles(
         {
             activePlayerCard: {
                 padding: 5,
-                backgroundColor: "white"
+                backgroundColor: "#E3F2FD"
             },
             inactivePlayerCard: {
                 padding: 5,
-                backgroundColor: "lightgray"
+                backgroundColor: "#3e4551"
             },
             playingCardContent: {
-                minHeight: 170,
-                maxHeight: 170,
-                minWidth: 110,
-                maxWidth: 110
+                minHeight: 150,
+                maxHeight: 150,
+                minWidth: 90,
+                maxWidth: 90
             },
             title: {
                 alignItems: 'center',
@@ -32,7 +32,7 @@ const useStyles = makeStyles(
     )
 );
 
-function topRowSlots(player, stealCardHandler) {
+function topRowSlots (player, stealCardHandler) {
     let slotCards = [];
 
     for (let i = 1; i <= 5; i++) {
@@ -56,7 +56,7 @@ function topRowSlots(player, stealCardHandler) {
     );
 }
 
-function bottomRowSlots(player, stealCardHandler) {
+function bottomRowSlots (player, stealCardHandler) {
     let slotCards = [];
 
     for (let i = 6; i <= 10; i++) {
@@ -81,7 +81,13 @@ function bottomRowSlots(player, stealCardHandler) {
     );
 }
 
-export default function IndividualPlayerView({ player, placeCardHandler, stealCardHandler }) {
+export default function IndividualPlayerView(
+    {
+        player,
+        placeCardHandler,
+        stealCardHandler
+    }
+) {
     const classes = useStyles();
 
     function placeCard() {
@@ -99,10 +105,18 @@ export default function IndividualPlayerView({ player, placeCardHandler, stealCa
             <Paper className={player.isTurn ? classes.activePlayerCard : classes.inactivePlayerCard}>
                 <Grid container direction="column" justify="center" alignItems="center" spacing={3}>
                     <Grid item>
-                        <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
-                            { player.isTurn && <LocalPlay /> }
-                            {player.name}
-                        </Typography>
+                        <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
+                            <Grid item>
+                                <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
+                                    { player.isTurn && <LocalPlay /> }
+                                </Typography>
+                            </Grid>
+                            <Grid item>
+                                <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
+                                    { player.name }
+                                </Typography>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item>
                         <Grid container direction="column" justify="center" alignItems="center" spacing={3}>

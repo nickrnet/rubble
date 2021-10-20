@@ -7,15 +7,19 @@ const useStyles = makeStyles(
     (theme) => (
         {
             playingCardArea: {
-                width: 115,
-                height: 167
+                width: 90,
+                height: 130
+            },
+            playingCardMedia: {
+                paddingTop: '25%',
+                paddingBottom: '25%'
             }
         }
     )
 );
 
 function getCardImage (card) {
-    let image = '';
+    let image;
     if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(card.value)) {
         image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}.png`;
     }
@@ -23,6 +27,7 @@ function getCardImage (card) {
         image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}2.png`;
     }
     return image;
+
 }
 
 export default function IndividualCardFront ({ card, onClick }) {

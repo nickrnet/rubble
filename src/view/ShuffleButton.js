@@ -8,7 +8,7 @@ const useStyles = makeStyles(
     (theme) => (
         {
             shuffleButton: {
-                backgroundColor: '#61dafb',
+                backgroundColor: '#3f729b',
             }
         }
     )
@@ -18,7 +18,7 @@ export default function ShuffleButton ({ enabled, shuffleHandler }) {
     const classes = useStyles();
 
     return (
-        <Button className={ classes.shuffleButton } disabled={ enabled } onClick={ shuffleHandler }>
+        <Button className={ classes.shuffleButton } disabled={ !enabled } onClick={ shuffleHandler }>
             <Typography>Shuffle</Typography>
         </Button>
     );
