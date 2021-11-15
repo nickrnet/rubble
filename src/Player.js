@@ -62,9 +62,10 @@ Player.prototype.drawFromDiscard = function (discard) {
 /**
  * Places the player's card in the appropriate slot.
  */
- Player.prototype.placeCardInSlot = function () {
+ Player.prototype.placeCardInSlot = function (discard) {
     let swapped = false;
     if (this.card.value === 13) {
+        // Kings are wild
         for (let c = 0; c < this.cards.length; c++) {
             // Swap Queens first
             if (this.cards[c].faceUp && this.cards[c].value == 12) {
@@ -88,8 +89,12 @@ Player.prototype.drawFromDiscard = function (discard) {
                 }
             }
         }
+        if (!swapped) {
+            this.discardCard(discard);
+        }
     }
     else if (this.card.value <= this.cards.length) {
+        // Put the card in its slot
         let slotCard = {...this.cards[this.card.value - 1]};
         if (slotCard.value === this.card.value && slotCard.faceUp) {
             return;
@@ -97,6 +102,10 @@ Player.prototype.drawFromDiscard = function (discard) {
         this.cards[this.card.value - 1] = this.card;
         this.card = slotCard;
         this.card.faceUp = true;
+    }
+    else {
+        // Card cannot be played
+        this.discardCard(discard);
     }
 }
 

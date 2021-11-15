@@ -151,7 +151,7 @@ export default function BoardController(
         if (player.card) {
             // Kings are wild
             if (player.card.value === 13) {
-                player.placeCardInSlot();
+                player.placeCardInSlot(discard);
             } else if (player.card.value === 12) {
                 // Queens allow steals
                 discardCard(player);
@@ -162,7 +162,7 @@ export default function BoardController(
             } else if (player.cards[player.card.value - 1].value === player.card.value && player.cards[player.card.value - 1].faceUp) {
                 discardCard(player);
             } else {
-                player.placeCardInSlot();
+                player.placeCardInSlot(discard);
             }
             setPlayers([...players]);
             // checkGameState();
