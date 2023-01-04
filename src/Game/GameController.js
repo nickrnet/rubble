@@ -1,102 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+import { useEffect, useState } from 'react';
 
 import BoardController from '../Board/BoardController';
-import Deck from '../Deck';
-import Discard from '../Discard';
-import Player from '../Player';
+import useDeck from '../Deck/useDeck';
+import DeckView from '../Deck/DeckView';
+import useDiscard from '../Discard/useDiscard';
+import DiscardView from '../Discard/DiscardView';
+import IndividualPlayerView from '../Player/IndividualPlayerView';
+import usePlayers from '../Player/usePlayers';
 
 export default function GameController() {
+    const [
+        discardCards, setDiscardCards,
+        discardDraw, discardReset
+    ] = useDiscard();
+    const [
+        deckCards, setDeckCards,
+        deckInitialized, setDeckInitialized,
+        deckSuits, setDeckSuits,
+        maxCardsInSuit, setMaxCardsInSuit,
+        deckInit, deckReset, deckShuffle, deckDraw
+    ] = useDeck();
+    const [
+        playersList, setPlayersList,
+        maxPlayers, setMaxPlayers,
+        activePlayerIndex, setActivePlayerIndex,
+        playersInitialized, setPlayersInitialized,
+        playersInit, playersReset, getCurrentPlayer
+    ] = usePlayers();
+    const [round, setRound] = useState(0);
+
     useEffect(() => {
-        console.log('Something rerendered the GameController.');
-    });
+        initializeGame();
+    }, [deckInitialized, playersInitialized]);
 
-    const [deck, setDeck] = useState(new Deck());
-    const [discard, setDiscard] = useState(new Discard());
-    const [players, setPlayers] = useState([
-        new Player({ name: 'Neo', isAuto: false, isTurn: true }),
-        new Player({ name: 'Morpheus', isAuto: true }),
-        new Player({ name: 'Trinity', isAuto: true }),
-        new Player({ name: 'Cypher', isAuto: true })
-    ]);
-
-    const [gameInProgress, setGameInProgress] = useState(false);
-    const [rounds, setRounds] = useState(0);
-    const [roundOver, setRoundOver] = useState(false);
-    const [roundWinner, setRoundWinner] = useState();
-    const [gameOver, setGameOver] = useState(false);
-    const [gameWinner, setGameWinner] = useState();
-    
-    function deal () {
-        let slotsFilled = false;
-        let needToDeal = true;
-        
-        while (needToDeal) {
-            for (let i = 0; i < players.length; i++) {
-                let player = players[i];
-                if (player.cards && player.cards.length < player.slots) {
-                    player.drawFromDeck(deck);
-                    player.cards.push({...player.card});
-                    player.card = null;
-                }
-            }
-            
-            slotsFilled = true;
-            for (let i = 0; i < players.length; i++) {
-                let player = players[i];
-                if (player.cards.length < player.slots) {
-                    slotsFilled = false;
-                }
-            };
-            needToDeal = !slotsFilled;
+    function initializeGame () {
+        if (!deckInitialized) {
+            const newDeck = deckInit();
+            setDeckInitialized(newDeck.deckInitialized);
+            setDeckCards(newDeck.deckCards);
         }
-    }
-    
-    function newGameHandler (endGame) {
-        if (!gameInProgress || endGame) {
-            discard.reset();
-            deck.reset();
-            deck.shuffle();
-            for (let i = 0; i < players.length; i++) {
-                players[i].reset();
-            }
-            deal();
-            setRounds(rounds + 1);
-            setGameInProgress(true);
-            setPlayers(players);
-            setDeck(deck);
-            setDiscard(discard);
-            setRoundOver(false);
+        if (!playersInitialized) {
+            const newPlayersList = playersInit();
+            setPlayersInitialized(newPlayersList.playersInitialized);
+            setPlayersList(newPlayersList.playersList);
+            setActivePlayerIndex(newPlayersList.activePlayerIndex);
+            setRound(1);
         }
+        console.log(`Active player: ${playersList && playersList.length ? playersList[activePlayerIndex].playerName : 'unknown'}`);
     }
-
-    function endRoundHandler () {
-        // decrement the winner's slot count
-        // get rid of the players' cards
-        // newGame unless a player has no slots
-    }
-
-    newGameHandler();
 
     return (
-        <BoardController
-            deck={deck}
-            setDeck={setDeck}
-            discard={discard}
-            setDiscard={setDiscard}
-            players={players}
-            setPlayers={setPlayers}
-            rounds={rounds}
-            setRounds={setRounds}
-            roundOver={roundOver}
-            setRoundOver={setRoundOver}
-            roundWinner={roundWinner}
-            setRoundWinner={setRoundWinner}
-            gameOver={gameOver}
-            setGameOver={setGameOver}
-            gameWinner={gameWinner}
-            setGameWinner={setGameWinner}
-            endRoundHandler={endRoundHandler}
-            newGameHandler={newGameHandler}
-        />
+        <div>
+            <BoardController 
+                deckCards={deckCards}
+                setDeckCards={setDeckCards}
+                deckDraw={deckDraw}
+                discardCards={discardCards}
+                setDiscardCards={setDiscardCards}
+                discardDraw={discardDraw}
+                playersList={playersList}
+                setPlayersList={setPlayersList}
+                playersInitialized={playersInitialized}
+                round={round}
+                setRound={setRound}
+                activePlayerIndex={activePlayerIndex}
+                setActivePlayerIndex={setActivePlayerIndex} />
+        </div>
     );
 }

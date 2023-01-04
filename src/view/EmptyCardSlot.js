@@ -36,7 +36,7 @@ export default function EmptyCardSlot (props) {
     }
 
     return (
-        <Card raised={ !props.empty } className={ classes.playingCardBorder }>
+        <Card raised={ !props.empty } className={ classes.playingCardBorder } onClick={props.onClick}>
             <CardContent className={ style } />
         </Card>
     );

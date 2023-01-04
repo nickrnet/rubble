@@ -1,282 +1,182 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import BoardView from './BoardView';
 
 export default function BoardController(
     {
-        deck,
-        setDeck,
-        discard,
-        setDiscard,
-        players,
-        setPlayers,
-        newGameHandler,
-        rounds,
-        setRounds,
-        roundOver,
-        setRoundOver,
-        roundWinner,
-        setRoundWinner,
-        gameOver,
-        setGameOver,
-        gameWinner,
-        setGameWinner
+        deckCards,
+        setDeckCards,
+        deckDraw,
+        discardCards,
+        setDiscardCards,
+        discardDraw,
+        playersList,
+        setPlayersList,
+        playersInitialized,
+        round,
+        setRound,
+        activePlayerIndex,
+        setActivePlayerIndex
     }
 ) {
+    const [playersDealt, setPlayersDealt] = useState(false);
+    const [roundWinner, setRoundWinner] = useState(null);
+
     useEffect(() => {
-        console.log('Something rerendered the BoardController.');
-        checkGameState();
+        console.log(`Rendering BoardController.`);
     });
 
-    function checkGameState() {
-        let someoneWon = false;
-        let gameWinner = "";
+    useEffect(() => {
+        initBoard();
+    }, [playersInitialized]);
 
-        for (let i = 0; i < players.length; i++) {
-            let faceUpCards = 0;
-            let player = players[i];
-            for (let c = 0; c < player.cards.length; c++) {
-                // Queens are not allowed to be shown and win
-                if (player.cards[c].faceUp) {
-                    if (player.cards[c].value != 12) {
-                        faceUpCards = faceUpCards + 1;
+    function initBoard () {
+        if (playersInitialized) {
+            console.log(`Dealing cards to players.`);
+            dealPlayers();
+        }
+    }
+
+    function dealPlayers () {
+        let deckCardsClone = [...deckCards];
+        let needToDeal = true;
+        let dealtPlayers = [...playersList];
+        while (needToDeal) {
+            dealtPlayers.forEach((player) => {
+                if (player.cards.length < player.slots) {
+                    const drawnCard = deckDraw(deckCardsClone);
+                    player.cards.push(drawnCard.cardDrawn);
+                    deckCardsClone = drawnCard.deckCards;
+                }
+            });
+            if (needToDeal) {
+                let fullSlots = 0;
+                dealtPlayers.forEach(player => {
+                    if (player.cards.length == player.slots) {
+                        fullSlots++;
                     }
+                });
+                if (fullSlots == dealtPlayers.length) {
+                    needToDeal = false;
                 }
             }
-            if (faceUpCards === player.slots) {
-                someoneWon = true;
-                gameWinner = player.name;
-                player.isTurn = false;
-                player.slots--;
-                break;
-            }
         }
-        
-        if (someoneWon) {
-            setRoundWinner(gameWinner);
-            setRoundOver(true);
-        }
-
-        if (deck.cards.length === 0) {
-            setRoundWinner('No one');
-            setRoundOver(true);
-        }
-
-        if (!roundOver) {
-            takeTurn();
-        }
+        setPlayersDealt(true);
+        setDeckCards(deckCardsClone);
+        setPlayersList(dealtPlayers);
     }
 
-    function getCurrentPlayer() {
-        let foundPlayer = null;
-        for (let i = 0; i < players.length; i++) {
-            let player = players[i];
-            if (player.isTurn) {
-                foundPlayer = i;
-            }
-        }
-        if (foundPlayer > players.length) {
-            foundPlayer = 0;
-        }
-        if (foundPlayer === null) {
-            foundPlayer = 0;
-        }
-
-        return foundPlayer;
-    }
-
-    function discardCard(player) {
-        if (typeof player === 'undefined' || !player.name) {
-            player = players[getCurrentPlayer()];
-        }
-
-        let currentPlayer = getCurrentPlayer();
-        
-        player.discardCard(discard);
-        setDiscard(discard);
-        
-        let nextPlayer = currentPlayer + 1;
-        if (nextPlayer >= players.length) {
-            nextPlayer = 0;
-        }
-        players[nextPlayer].isTurn = true;
-        setPlayers([...players]);
-        // checkGameState();
-    }
-
-    function drawFromDeck(player) {
-        if (typeof player === 'undefined' || !player.name) {
-            player = players[getCurrentPlayer()];
-        }
-        if (!player.card && deck.cards.length > 0) {
-            player.drawFromDeck(deck);
-            player.card.faceUp = true;
-        }
-        else if (deck.cards.length === 0) {
-            setGameWinner('No one');
-            setGameOver(true);
-        }
-
-        setDeck(deck);
-        setPlayers([...players]);
-    }
-    
-    function drawFromDiscard(player) {
-        if (typeof player === 'undefined' || !player.name) {
-            player = players[getCurrentPlayer()];
-        }
-
+    function playerDrawFromDeck () {
+        const playersListClone = [...playersList];
+        const player = {...playersListClone[activePlayerIndex]};
+        const deckCardsClone = [...deckCards];
         if (!player.card) {
-            let discardCard = discard.cards[discard.cards.length-1];
-            let discardValue = discardCard.value;
-            let hasKingInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 13 && player.cards[discardValue-1].faceUp;
-            let hasQueenInSlot = discardValue <= player.slots && player.cards[discardValue-1].value === 12 && player.cards[discardValue-1].faceUp;
-            let canDrawDiscard = discardValue <= player.slots && !player.cards[discardValue-1].faceUp;
-            if (hasKingInSlot || hasQueenInSlot || canDrawDiscard) {
-                player.drawFromDiscard(discard);
-                if (player.card) {
-                    player.card.faceUp = true;
-                }
-                // TODO: Should we automatically place the card in the slot?
-                setDiscard(discard);
-                setPlayers([...players]);
-            }
-        }
-    }
-
-    function placeCardInSlot(player) {
-        if (typeof player === 'undefined' || !player.name) {
-            player = players[getCurrentPlayer()];
-        }
-        if (player.card) {
-            // Kings are wild
-            if (player.card.value === 13) {
-                player.placeCardInSlot(discard);
-            } else if (player.card.value === 12) {
-                // Queens allow steals
-                discardCard(player);
-            } else if (player.card.value > 10) {
-                discardCard(player);
-            } else if (player.card.value > player.slots) {
-                discardCard(player);
-            } else if (player.cards[player.card.value - 1].value === player.card.value && player.cards[player.card.value - 1].faceUp) {
-                discardCard(player);
-            } else {
-                player.placeCardInSlot(discard);
-            }
-            setPlayers([...players]);
-            // checkGameState();
-        }
-    }
-
-    function stealCard(targetPlayer, slot) {
-        let stoleACard = false;
-        let currentPlayer = players[getCurrentPlayer()];
-        if (targetPlayer.name === currentPlayer.name) {}
-        if (currentPlayer.card && currentPlayer.card.value === 12) {
-            let targetCard = targetPlayer.cards[slot];
-            if (targetCard && targetCard.faceUp && targetCard.canBeStolen) {
-                let tempCard = {...targetCard};
-                targetPlayer.cards[slot] = {...currentPlayer.card};
-                currentPlayer.card = {...tempCard};
-                stoleACard = true;
-            }
-        }
-        setPlayers([...players]);
-        return stoleACard;
-    }
-
-    function takeTurn() {
-        let player = players[getCurrentPlayer()];
-        
-        while (player && player.isTurn && player.isAuto) {
-            if (player.card && player.card.value == 12) {
-                // Player can steal from another
-                let slot, stoleACard;
-                for (let c = 0; c < player.cards.length; c++) {
-                    // Find first slot facedown
-                    if (!player.cards[c].faceUp) {
-                        slot = c;
-                    }
-                    // Find a King
-                    else if (player.cards[c].value == 13) {
-                        slot = c;
-                    }
-                    if (slot) {
-                        for (let p = 0; p < players.length; p++) {
-                            stoleACard = stealCard(players[p], slot);
-                            if (stoleACard) {
-                                break;
-                            }
-                        }
-                        if (stoleACard) {
-                            break;
-                        }
-                    }
-                }
-                placeCardInSlot(player);
-            }
-            else if (player.card && player.card.value > 0) {
-                placeCardInSlot(player);
-            }
-            else if (discard.cards.length > 0) {
-                let discardCard = discard.cards[discard.cards.length-1];
-                let discardValue = discardCard.value;
-                let hasQueen = false;
-                let queenSlot;
-                // Check for a Queen
-                for (let c = 0; c < player.cards.length; c++) {
-                    if (player.cards[c].faceUp && player.cards[c].value == 12) {
-                        hasQueen = true;
-                        queenSlot = c;
-                        break;
-                    }
-                }
-                if (hasQueen && queenSlot && discardValue < 11 && player.cards[queenSlot].value === discardValue) {
-                    drawFromDiscard(player);
-                    placeCardInSlot(player);
-                }
-                else if (discardValue <= player.slots && !player.cards[discardValue-1].faceUp) {
-                    drawFromDiscard(player);
-                    placeCardInSlot(player);
-                }
-                else if (deck.cards.length > 0) {
-                    drawFromDeck(player);
-                    placeCardInSlot(player);
-                }
-                else {
-                    player.isTurn = false;
-                    setPlayers([...players]);
-                }
+            if (deckCardsClone && deckCardsClone.length) {
+                const draw = deckDraw();
+                player.card = {...draw.cardDrawn};
+                player.card.faceUp = true;
+                playersListClone[activePlayerIndex] = {...player};
+                setPlayersList(playersListClone);
+                setDeckCards([...draw.deckCards]);
             }
             else {
-                drawFromDeck(player);
-                placeCardInSlot(player);
+                console.log(`No cards to draw from.`);
             }
         }
+        else {
+            console.log(`Player already has a card.`);
+        }
+    }
+
+    function playerDrawFromDiscard () {
+        const playersListClone = [...playersList];
+        const player = {...playersListClone[activePlayerIndex]};
+        const discardCardsClone = [...discardCards];
+        if (!player.card) {
+            if (discardCardsClone && discardCardsClone.length) {
+                const draw = discardDraw();
+                player.card = {...draw.cardDrawn};
+                player.card.faceUp = true;
+                playersListClone[activePlayerIndex] = {...player};
+                setPlayersList(playersListClone);
+                setDiscardCards([...draw.discardCards]);
+            }
+            else {
+                console.log(`No discard cards to draw from.`);
+            }
+        }
+        else {
+            console.log(`Player already has a card.`);
+        }
+    }
+
+    function playerDiscard () {
+        const playersListClone = [...playersList];
+        const player = {...playersListClone[activePlayerIndex]};
+        const discardCardsClone = [...discardCards];
+        if (player.card) {
+            discardCardsClone.push({...player.card});
+            player.card = null;
+            playersListClone[activePlayerIndex] = {...player};
+            setPlayersList(playersListClone);
+            setDiscardCards(discardCardsClone);
+            endTurn();
+        }
+    }
+
+    function endTurn () {
+        // TODO check deck, discard+next player's slots for autos, start new round/game
+        if (activePlayerIndex < playersList.length-1) {
+            setActivePlayerIndex(activePlayerIndex+1);
+        }
+        else {
+            setActivePlayerIndex(0);
+        }
+    }
+
+    function playerPlaceCard (targetSlot = 0) {
+        console.log(`BoardController.playerPlaceCard`);
+        const playersListClone = [...playersList];
+        const player = {...playersListClone[activePlayerIndex]};
+        if (player.card && player.card.value) {
+            // Jacks are discarded
+            if (player.card.value == 11) {
+                playerDiscard();
+                return;
+            }
+            // TODO: Handle Queen (steal)
+            else if (player.card.value == 12) {
+                playerDiscard();
+                return;
+            }
+            else {
+                // Put the card in the requested slot
+                // Kings are wild and can go in any slot
+                if (player.card.value-1 == targetSlot || player.card.value == 13) {
+                    let slotCard = {...player.cards[targetSlot]};
+                    slotCard.faceUp = true;
+                    player.cards[targetSlot] = {...player.card};
+                    player.card = slotCard;
+                    playersListClone[activePlayerIndex] = {...player};
+                    setPlayersList(playersListClone);
+                }
+            }
+        }
+    }
+
+    function newRound () {
+        setRound(round+1);
     }
 
     return <BoardView
-        players={players}
-        setPlayers={setPlayers}
-        deck={deck}
-        setDeck={setDeck}
-        discard={discard}
-        setDiscard={setDiscard}
-        rounds={rounds}
-        setRounds={setRounds}
-        roundOver={roundOver}
-        setRoundOver={setRoundOver}
-        roundWinner={roundWinner}
-        setRoundWinner={setRoundWinner}
-        gameOver={gameOver}
-        setGameOver={setGameOver}
-        gameWinner={gameWinner}
-        setGameWinner={setGameWinner}
-        drawFromDeckHandler={drawFromDeck}
-        drawFromDiscardHandler={drawFromDiscard}
-        placeCardHandler={placeCardInSlot}
-        stealCardHandler={stealCard}
-        newGameHandler={newGameHandler}
+        playersList={playersList}
+        deckCards={deckCards}
+        discardCards={discardCards}
+        round={round}
+        activePlayerIndex={activePlayerIndex}
+        playerDrawFromDeck={playerDrawFromDeck}
+        playerDiscard={playerDiscard}
+        playerDrawFromDiscard={playerDrawFromDiscard}
+        playerPlaceCard={playerPlaceCard}
     />;
 }

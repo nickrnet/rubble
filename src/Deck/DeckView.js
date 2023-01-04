@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Typography } from '@material-ui/core';
@@ -18,26 +18,21 @@ const useStyles = makeStyles (
 
 export default function DeckView (
     {
-        cards,
-        drawFromDeckHandler
+        deckCards,
+        player,
+        playerDrawFromDeck
     }
 ) {
     const classes = useStyles();
 
-    function onCardClick () {
-        if (drawFromDeckHandler && cards.length) {
-            drawFromDeckHandler();
-        }
-    }
-
     return (
-        <Grid container direction="row" justify="center" alignItems="flex-start" spacing={ 2 }>
+        <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={ 2 }>
             <Grid item>
                 <Typography variant="h6" component="h1" className={ classes.title } gutterBottom>Deck</Typography>
             </Grid>
             <Grid item>
-                { cards.length ? 
-                <IndividualCardBack onClick={ onCardClick } /> :
+                { deckCards.length ? 
+                <IndividualCardBack onClick={ playerDrawFromDeck } /> :
                 <EmptyCardSlot />
                 }
             </Grid>

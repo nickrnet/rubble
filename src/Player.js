@@ -1,3 +1,5 @@
+import Deck from './Deck.js';
+
 /**
  * A player object.
  * @class Player
@@ -7,7 +9,7 @@
  * @property slots {number} the player's slots to flip,
  * @property card {card} the player's current card.
  */
-class Player {
+ export default class Player {
     card = null;
     name = "";
     cards = [];
@@ -39,19 +41,29 @@ class Player {
             throw err;
         }
     }
+    
+    /**
+     * Draws a card from a deck and sets it as the Player's card.
+     * @param {Deck} deck A Deck to draw from.
+     */
+    drawFromDeck (deck) {
+        debugger;
+        this.card = deck.draw();
+    }
 }
 
 /**
  * Draws a card from a deck and sets it as the Player's card.
- * @param {deck} deck A Deck to draw from.
+ * @param {Deck} deck A Deck to draw from.
  */
- Player.prototype.drawFromDeck = function (deck) {
-    this.card = deck.draw();
-}
+//  Player.prototype.drawFromDeck = function (deck) {
+//     debugger;
+//     this.card = deck.draw();
+// }
 
 /**
  * Draws a card from the discard pile and sets it as the Player's card.
- * @param {discard} discard A discard pile.
+ * @param {Discard} discard A discard pile.
  */
 Player.prototype.drawFromDiscard = function (discard) {
     if (discard.cards.length > 0) {
@@ -61,6 +73,7 @@ Player.prototype.drawFromDiscard = function (discard) {
 
 /**
  * Places the player's card in the appropriate slot.
+ * @param {Discard} discard A discard pile.
  */
  Player.prototype.placeCardInSlot = function (discard) {
     let swapped = false;
@@ -126,11 +139,9 @@ Player.prototype.drawFromDiscard = function (discard) {
  */
 Player.prototype.reset = function () {
     this.card = null;
-    this.cards = [];
+    this.cards.length = 0;
 }
 
 Player.prototype.toString = function () {
     return JSON.stringify(this);
 }
-
-export default Player;
