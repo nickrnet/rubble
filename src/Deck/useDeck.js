@@ -25,6 +25,7 @@ export default function useDeck () {
         let cardsClone = [...deckCards];
         if (!deckInitialized) {
             console.log(`Initializing deck.`);
+            cardsClone.length = 0;
             deckSuits.map(suit => {
                 console.log(`Deck is ${cardsClone.length} cards.`);
                 console.log(`Adding ${maxCardsInSuit} cards of ${suit}...`);

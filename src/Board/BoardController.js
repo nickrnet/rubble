@@ -8,7 +8,6 @@ export default function BoardController(
         setDeckInitialized,
         deckCards,
         setDeckCards,
-        deckInit,
         deckDraw,
         discardCards,
         setDiscardCards,
@@ -35,10 +34,10 @@ export default function BoardController(
     });
 
     useEffect(() => {
-        if (playersInitialized) {
+        if (deckInitialized && playersInitialized) {
             initBoard();
         }
-    }, [playersInitialized]);
+    }, [deckInitialized, playersInitialized]);
 
     useEffect(() => {
         if (resetDiscard) {
@@ -52,7 +51,6 @@ export default function BoardController(
         if (resetPlayers) {
             const players = playersReset();
             setPlayersList(players.playersList);
-            setPlayersInitialized(false);
             setResetPlayers(false);
         }
     }, [resetPlayers]);
@@ -180,15 +178,44 @@ export default function BoardController(
     }
 
     function endTurn () {
-        // TODO next player's slots for autos, start new game
-        if (!deckCards.length) {
+        // TODO check for auto players, start new game
+        const currentPlayer = playersList[activePlayerIndex];
+        const currentPlayerCards = currentPlayer.cards;
+        let currentPlayerFaceUpCards = 0;
+        for (let i = 0; i < currentPlayerCards.length; i++) {
+            if (currentPlayerCards[i].faceUp) {
+                currentPlayerFaceUpCards++;
+            }
+        }
+        // debugger;
+        if (currentPlayer.slots === currentPlayerFaceUpCards) {
+            // Someone won. New round.
+            console.log(`${currentPlayer.playerName} won! New round.`);
+            const playersListClone = [...playersList];
+            playersListClone[activePlayerIndex].slots = playersListClone[activePlayerIndex].slots-1;
+            setPlayersList(playersListClone);
             setRound(round+1);
             setResetPlayers(true);
             setDeckInitialized(false);
             setResetDiscard(true);
-            setPlayersInitialized(true);
         }
-        if (activePlayerIndex < playersList.length-1) {
+        else if (!deckCards.length) {
+            // Deck is empty and no winner, new round
+            console.log('New round.');
+            setRound(round+1);
+            setResetPlayers(true);
+            setDeckInitialized(false);
+            setResetDiscard(true);
+            // Next player's turn
+            if (activePlayerIndex < playersList.length-1) {
+                setActivePlayerIndex(activePlayerIndex+1);
+            }
+            else {
+                setActivePlayerIndex(0);
+            }
+        }
+        // Next player's turn
+        else if (activePlayerIndex < playersList.length-1) {
             setActivePlayerIndex(activePlayerIndex+1);
         }
         else {
