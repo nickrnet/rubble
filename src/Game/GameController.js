@@ -1,13 +1,8 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import { useEffect, useState } from 'react';
 
 import BoardController from '../Board/BoardController';
 import useDeck from '../Deck/useDeck';
-import DeckView from '../Deck/DeckView';
 import useDiscard from '../Discard/useDiscard';
-import DiscardView from '../Discard/DiscardView';
-import IndividualPlayerView from '../Player/IndividualPlayerView';
 import usePlayers from '../Player/usePlayers';
 
 export default function GameController() {
@@ -53,16 +48,23 @@ export default function GameController() {
 
     return (
         <div>
-            <BoardController 
+            <BoardController
+                deckInitialized={deckInitialized}
+                setDeckInitialized={setDeckInitialized}
                 deckCards={deckCards}
                 setDeckCards={setDeckCards}
+                deckInit={deckInit}
                 deckDraw={deckDraw}
+                deckReset={deckReset}
                 discardCards={discardCards}
                 setDiscardCards={setDiscardCards}
                 discardDraw={discardDraw}
+                discardReset={discardReset}
                 playersList={playersList}
                 setPlayersList={setPlayersList}
+                playersReset={playersReset}
                 playersInitialized={playersInitialized}
+                setPlayersInitialized={setPlayersInitialized}
                 round={round}
                 setRound={setRound}
                 activePlayerIndex={activePlayerIndex}

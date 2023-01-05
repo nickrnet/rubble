@@ -48,8 +48,16 @@ export default function usePlayers () {
      * Resets the Players.
      */
     function playersReset () {
-        console.log(`Players reset is not yet implemented.`);
-        console.trace();
+        let playersClone = [...playersList];
+        for (let p = 0; p < playersClone.length; p++) {
+            playersClone[p].card = null;
+            playersClone[p].cards.length = 0;
+        }
+        return {
+            playersInitialized: playersInitialized,
+            playersList: playersClone,
+            activePlayerIndex: 0
+        }
     }
 
     function getCurrentPlayer () {

@@ -72,57 +72,6 @@ Player.prototype.drawFromDiscard = function (discard) {
 }
 
 /**
- * Places the player's card in the appropriate slot.
- * @param {Discard} discard A discard pile.
- */
- Player.prototype.placeCardInSlot = function (discard) {
-    let swapped = false;
-    if (this.card.value === 13) {
-        // Kings are wild
-        for (let c = 0; c < this.cards.length; c++) {
-            // Swap Queens first
-            if (this.cards[c].faceUp && this.cards[c].value == 12) {
-                let slotCard = {...this.cards[c]};
-                this.cards[c] = {...this.card};
-                this.card = slotCard;
-                swapped = true;
-                break;
-            }
-        }
-        if (!swapped) {
-            for (let c = 0; c < this.cards.length; c++) {
-                // Find the first face down card. This could be smarter or more aggressive.
-                if (!this.cards[c].faceUp) {
-                    let slotCard = {...this.cards[c]};
-                    this.cards[c] = {...this.card};
-                    this.card = slotCard;
-                    this.card.faceUp = true;
-                    swapped = true;
-                    break;
-                }
-            }
-        }
-        if (!swapped) {
-            this.discardCard(discard);
-        }
-    }
-    else if (this.card.value <= this.cards.length) {
-        // Put the card in its slot
-        let slotCard = {...this.cards[this.card.value - 1]};
-        if (slotCard.value === this.card.value && slotCard.faceUp) {
-            return;
-        }
-        this.cards[this.card.value - 1] = this.card;
-        this.card = slotCard;
-        this.card.faceUp = true;
-    }
-    else {
-        // Card cannot be played
-        this.discardCard(discard);
-    }
-}
-
-/**
  * Discards the player's current card.
  * @param discard {array} discard A discard pile.
  */

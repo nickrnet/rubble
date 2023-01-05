@@ -17,11 +17,11 @@ export default function useDiscard () {
      * Resets the discard.
      */
     function resetDiscard () {
-        // const cardsClone = [...discardCards];
-        // cardsClone.length = 0;
-        // setDiscardCards(cardsClone);
-        console.log(`Discard reset is not yet implemented.`);
-        console.trace();
+        const cardsClone = [...discardCards];
+        cardsClone.length = 0;
+        return {
+            discardCards: cardsClone
+        }
     };
 
     /**

@@ -50,10 +50,10 @@ export default function useDeck () {
      * Resets this deck to 52 cards, shuffled.
      */
     function deckReset () {
-        // const cardsClone = [...deckCards];
-        // cardsClone.length = 0;
-        console.log(`Deck reset is not yet implemented.`);
-        console.trace();
+        let cardsClone = [...deckCards];
+        const initResponse = deckInit();
+        setDeckCards(initResponse.deckCards);
+        setDeckInitialized(initResponse.deckInitialized);
     }
 
     /**

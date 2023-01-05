@@ -4,15 +4,21 @@ import BoardView from './BoardView';
 
 export default function BoardController(
     {
+        deckInitialized,
+        setDeckInitialized,
         deckCards,
         setDeckCards,
+        deckInit,
         deckDraw,
         discardCards,
         setDiscardCards,
         discardDraw,
+        discardReset,
         playersList,
         setPlayersList,
+        playersReset,
         playersInitialized,
+        setPlayersInitialized,
         round,
         setRound,
         activePlayerIndex,
@@ -21,20 +27,39 @@ export default function BoardController(
 ) {
     const [playersDealt, setPlayersDealt] = useState(false);
     const [roundWinner, setRoundWinner] = useState(null);
+    const [resetDiscard, setResetDiscard] = useState(false);
+    const [resetPlayers, setResetPlayers] = useState(false);
 
     useEffect(() => {
         console.log(`Rendering BoardController.`);
     });
 
     useEffect(() => {
-        initBoard();
+        if (playersInitialized) {
+            initBoard();
+        }
     }, [playersInitialized]);
 
-    function initBoard () {
-        if (playersInitialized) {
-            console.log(`Dealing cards to players.`);
-            dealPlayers();
+    useEffect(() => {
+        if (resetDiscard) {
+            const discard = discardReset();
+            setDiscardCards(discard.discardCards);
+            setResetDiscard(false);
         }
+    }, [resetDiscard]);
+
+    useEffect(() => {
+        if (resetPlayers) {
+            const players = playersReset();
+            setPlayersList(players.playersList);
+            setPlayersInitialized(false);
+            setResetPlayers(false);
+        }
+    }, [resetPlayers]);
+
+    function initBoard () {
+        console.log(`Dealing cards to players.`);
+        dealPlayers();
     }
 
     function dealPlayers () {
@@ -124,16 +149,6 @@ export default function BoardController(
         }
     }
 
-    function endTurn () {
-        // TODO check deck, discard+next player's slots for autos, start new round/game
-        if (activePlayerIndex < playersList.length-1) {
-            setActivePlayerIndex(activePlayerIndex+1);
-        }
-        else {
-            setActivePlayerIndex(0);
-        }
-    }
-
     function playerPlaceCard (targetSlot = 0) {
         console.log(`BoardController.playerPlaceCard`);
         const playersListClone = [...playersList];
@@ -164,8 +179,21 @@ export default function BoardController(
         }
     }
 
-    function newRound () {
-        setRound(round+1);
+    function endTurn () {
+        // TODO next player's slots for autos, start new game
+        if (!deckCards.length) {
+            setRound(round+1);
+            setResetPlayers(true);
+            setDeckInitialized(false);
+            setResetDiscard(true);
+            setPlayersInitialized(true);
+        }
+        if (activePlayerIndex < playersList.length-1) {
+            setActivePlayerIndex(activePlayerIndex+1);
+        }
+        else {
+            setActivePlayerIndex(0);
+        }
     }
 
     return <BoardView
