@@ -24,10 +24,12 @@ export default function BoardController(
         setActivePlayerIndex
     }
 ) {
-    const [playersDealt, setPlayersDealt] = useState(false);
-    const [roundWinner, setRoundWinner] = useState(null);
     const [resetDiscard, setResetDiscard] = useState(false);
     const [resetPlayers, setResetPlayers] = useState(false);
+    const [roundOver, setRoundOver] = useState(false);
+    const [roundWinner, setRoundWinner] = useState(null);
+    const [gameOver, setGameOver] = useState(false);
+    const [gameWinner, setGameWinner] = useState(null);
 
     useEffect(() => {
         console.log(`Rendering BoardController.`);
@@ -84,7 +86,6 @@ export default function BoardController(
                 }
             }
         }
-        setPlayersDealt(true);
         setDeckCards(deckCardsClone);
         setPlayersList(dealtPlayers);
     }
@@ -177,9 +178,11 @@ export default function BoardController(
         }
     }
 
-    function endTurn () {
-        // TODO check for auto players, start new game
-        const currentPlayer = playersList[activePlayerIndex];
+    function endRound () {
+        // TODO: Check for game over and reset
+        const playersListClone = [...playersList];
+
+        const currentPlayer = playersListClone[activePlayerIndex];
         const currentPlayerCards = currentPlayer.cards;
         let currentPlayerFaceUpCards = 0;
         for (let i = 0; i < currentPlayerCards.length; i++) {
@@ -187,32 +190,56 @@ export default function BoardController(
                 currentPlayerFaceUpCards++;
             }
         }
-        // debugger;
+        if (currentPlayerFaceUpCards === currentPlayer.slots) {
+            playersListClone[activePlayerIndex].slots = playersListClone[activePlayerIndex].slots-1;
+        }
+
+        setPlayersList(playersListClone);
+        setRound(round+1);
+        setResetPlayers(true);
+        setDeckInitialized(false);
+        setResetDiscard(true);
+        setRoundOver(false);
+        if (activePlayerIndex < playersListClone.length-1) {
+            setActivePlayerIndex(activePlayerIndex+1);
+        }
+        else {
+            setActivePlayerIndex(0);
+        }
+    }
+
+    function endTurn () {
+        // TODO check for auto players
+        const currentPlayer = playersList[activePlayerIndex];
+        const currentPlayerCards = currentPlayer.cards;
+        let currentPlayerFaceUpCards = 0;
+        let currentPlayerWon = false;
+        for (let i = 0; i < currentPlayerCards.length; i++) {
+            if (currentPlayerCards[i].faceUp) {
+                currentPlayerFaceUpCards++;
+            }
+        }
         if (currentPlayer.slots === currentPlayerFaceUpCards) {
             // Someone won. New round.
-            console.log(`${currentPlayer.playerName} won! New round.`);
-            const playersListClone = [...playersList];
-            playersListClone[activePlayerIndex].slots = playersListClone[activePlayerIndex].slots-1;
-            setPlayersList(playersListClone);
-            setRound(round+1);
-            setResetPlayers(true);
-            setDeckInitialized(false);
-            setResetDiscard(true);
+            const currentPlayer = playersList[activePlayerIndex];
+            // Check game over man
+            if (currentPlayer.slots === 1) {
+                console.log(`${currentPlayer.playerName} won the whole game!`);
+                currentPlayerWon = true;
+                setGameWinner(currentPlayer.playerName);
+                setRoundOver(true);
+                setGameOver(true);
+            }
+            if (!currentPlayerWon) {
+                console.log(`${currentPlayer.playerName} won the round!`);
+                setRoundOver(true);
+                setRoundWinner(currentPlayer.playerName);
+            }
         }
         else if (!deckCards.length) {
-            // Deck is empty and no winner, new round
-            console.log('New round.');
-            setRound(round+1);
-            setResetPlayers(true);
-            setDeckInitialized(false);
-            setResetDiscard(true);
-            // Next player's turn
-            if (activePlayerIndex < playersList.length-1) {
-                setActivePlayerIndex(activePlayerIndex+1);
-            }
-            else {
-                setActivePlayerIndex(0);
-            }
+            // Deck is empty, new round
+            console.log('Deck empty. New round.');
+            setRoundOver(true);
         }
         // Next player's turn
         else if (activePlayerIndex < playersList.length-1) {
@@ -233,5 +260,11 @@ export default function BoardController(
         playerDiscard={playerDiscard}
         playerDrawFromDiscard={playerDrawFromDiscard}
         playerPlaceCard={playerPlaceCard}
+        endRound={endRound}
+        roundOver={roundOver}
+        setRoundOver={setRoundOver}
+        roundWinner={roundWinner}
+        gameOver={gameOver}
+        gameWinner={gameWinner}
     />;
 }

@@ -3,8 +3,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Typography } from '@material-ui/core';
 
-// import DeckController from '../Deck/DeckController';
-// import DiscardController from '../Discard/DiscardController';
 import IndividualPlayerView from '../Player/IndividualPlayerView';
 import Winner from '../view/Winner';
 import DeckView from '../Deck/DeckView';
@@ -50,7 +48,13 @@ export default function BoardView (
         playerDrawFromDeck,
         playerDiscard,
         playerDrawFromDiscard,
-        playerPlaceCard
+        playerPlaceCard,
+        endRound,
+        roundOver,
+        setRoundOver,
+        roundWinner,
+        gameOver,
+        gameWinner,
     }
 ) {
     const classes = useStyles();
@@ -59,6 +63,14 @@ export default function BoardView (
         <Paper
             elevation={3}
             className={classes.gameBoard} >
+            <Winner
+                roundOver={roundOver}
+                setRoundOver={setRoundOver}
+                roundWinner={roundWinner}
+                gameOver={gameOver}
+                gameWinner={gameWinner}
+                endRound={endRound}
+                />
             <Grid 
                 container
                 direction="column"
@@ -88,12 +100,6 @@ export default function BoardView (
                                 playerDrawFromDeck,
                                 playerDiscard,
                                 playerPlaceCard)}
-                            {/* <IndividualPlayerView
-                                player={playersList[0]}
-                                isActive={activePlayerIndex == 0 }
-                                playerDrawFromDeck={playerDrawFromDeck}
-                                playerDiscard={playerDiscard}
-                                playerPlaceCard={playerPlaceCard} /> */}
                         </Grid>
                         <Grid item>
                             <IndividualPlayerView
