@@ -17,7 +17,6 @@ export default function BoardController(
         setPlayersList,
         playersReset,
         playersInitialized,
-        setPlayersInitialized,
         round,
         setRound,
         activePlayerIndex,
@@ -31,9 +30,12 @@ export default function BoardController(
     const [gameOver, setGameOver] = useState(false);
     const [gameWinner, setGameWinner] = useState(null);
 
-    useEffect(() => {
-        console.log(`Rendering BoardController.`);
-    });
+    const [autoPlayerShouldDrawFromDiscard, setAutoPlayerShouldDrawFromDiscard] = useState(false);
+    const [autoPlayerShouldDrawFromDeck, setAutoPlayerShouldDrawFromDeck] = useState(false);
+    const [autoPlayerDrew, setAutoPlayerDrew] = useState(false);
+    const [autoPlayerCheckCard, setAutoPlayerCheckCard] = useState(false);
+    const [autoPlayerPlayCard, setAutoPlayerPlayCard] = useState(false);
+    const [autoPlayerDiscardCard, setAutoPlayerDiscardCard] = useState(false);
 
     useEffect(() => {
         if (deckInitialized && playersInitialized) {
@@ -56,6 +58,94 @@ export default function BoardController(
             setResetPlayers(false);
         }
     }, [resetPlayers]);
+
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player && player.isAuto) {
+            console.log(`Found auto player ${player.playerName}.`);
+            playAutoTurn();
+        }
+    }, [activePlayerIndex]);
+
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerShouldDrawFromDiscard) {
+                console.log(`Auto player ${player.playerName} is drawing from discard.`);
+                playerDrawFromDiscard();
+                setAutoPlayerShouldDrawFromDiscard(false);
+                setAutoPlayerDrew(true);
+            }
+        }
+    }, [autoPlayerShouldDrawFromDiscard]);
+    
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerShouldDrawFromDeck) {
+                console.log(`Auto player ${player.playerName} is drawing from the deck.`);
+                playerDrawFromDeck();
+                setAutoPlayerShouldDrawFromDeck(false);
+                setAutoPlayerDrew(true);
+            }
+        }
+    }, [autoPlayerShouldDrawFromDeck]);
+
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerDrew) {
+                console.log(`Auto player ${player.playerName} has drawn.`);
+                setAutoPlayerDrew(false);
+                setAutoPlayerCheckCard(true);
+            }
+        }
+    }, [autoPlayerDrew]);
+
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerCheckCard) {
+                console.log(`Auto player ${player.playerName} is checking their card.`);
+                const cardValue = player.card.value;
+                if (cardValue < player.slots) {
+                    if (!player.cards[cardValue-1].faceUp) {
+                        setAutoPlayerPlayCard(true);
+                    }
+                    else {
+                        setAutoPlayerDiscardCard(true);
+                    }
+                }
+                else {
+                    setAutoPlayerDiscardCard(true);
+                }
+                setAutoPlayerCheckCard(false);
+            }
+        }
+    }, [autoPlayerCheckCard]);
+    
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerPlayCard) {
+                console.log(`Auto player ${player.playerName} is playing their card.`);
+                playerPlaceCard(player.card.value-1);
+                setAutoPlayerPlayCard(false);
+                setAutoPlayerDrew(true);
+            }
+        }
+    }, [autoPlayerPlayCard]);
+    
+    useEffect(() => {
+        const player = playersList[activePlayerIndex];
+        if (player) {
+            if (autoPlayerDiscardCard) {
+                console.log(`Auto player ${player.playerName} is discarding their card.`);
+                playerDiscard();
+                setAutoPlayerDiscardCard(false);
+            }
+        }
+    }, [autoPlayerDiscardCard]);
 
     function initBoard () {
         console.log(`Dealing cards to players.`);
@@ -149,19 +239,16 @@ export default function BoardController(
     }
 
     function playerPlaceCard (targetSlot = 0) {
-        console.log(`BoardController.playerPlaceCard`);
         const playersListClone = [...playersList];
         const player = {...playersListClone[activePlayerIndex]};
         if (player.card && player.card.value) {
             // Jacks are discarded
             if (player.card.value == 11) {
                 playerDiscard();
-                return;
             }
             // TODO: Handle Queen (steal)
             else if (player.card.value == 12) {
                 playerDiscard();
-                return;
             }
             else {
                 // Put the card in the requested slot
@@ -215,7 +302,7 @@ export default function BoardController(
         let currentPlayerFaceUpCards = 0;
         let currentPlayerWon = false;
         for (let i = 0; i < currentPlayerCards.length; i++) {
-            if (currentPlayerCards[i].faceUp) {
+            if (currentPlayerCards[i] && currentPlayerCards[i].faceUp) {
                 currentPlayerFaceUpCards++;
             }
         }
@@ -247,6 +334,32 @@ export default function BoardController(
         }
         else {
             setActivePlayerIndex(0);
+        }
+    }
+
+    function playAutoTurn () {
+        const player = playersList[activePlayerIndex];
+        // Check discard
+        if (discardCards.length) {
+            // Draw if needed
+            const lastDiscardedCard = discardCards[discardCards.length-1];
+            const lastDiscardedCardValue = lastDiscardedCard.value;
+            if (lastDiscardedCardValue < 10 && 
+                player.slots >= lastDiscardedCardValue && 
+                player.cards[lastDiscardedCardValue-1] &&
+                !player.cards[lastDiscardedCardValue-1].faceUp) {
+                console.log('Auto player should draw from discard.');
+                setAutoPlayerShouldDrawFromDiscard(true);
+            }
+            else {
+                console.log('Auto player cannot draw the discard.');
+                setAutoPlayerShouldDrawFromDeck(true);
+            }
+        }
+        // Draw
+        else if (deckCards.length) {
+            console.log('Auto player should draw card from the deck.');
+            setAutoPlayerShouldDrawFromDeck(true);
         }
     }
 

@@ -15,16 +15,16 @@ export default function usePlayers () {
     const [activePlayerIndex, setActivePlayerIndex] = useState(0);
     const [playersInitialized, setPlayersInitialized] = useState(false);
 
-    useEffect(() => {
-        console.log(`Players loaded with ${playersList.length} players.`);
-    });
+    // useEffect(() => {
+    //     console.log(`Players loaded with ${playersList.length} players.`);
+    // });
 
     function playersInit () {
         let playersClone = [...playersList];
         if (!playersInitialized) {
             playersClone.length = 0;
             playersClone = [...Array(maxPlayers)].map((item, index) => {
-                console.log(`Creating player ${index + 1}...`);
+                // console.log(`Creating player ${index + 1}...`);
                 return new Player(`Player ${index + 1}`);
             });
             playersClone[0].isAuto = false;

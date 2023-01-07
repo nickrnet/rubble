@@ -9,9 +9,9 @@ import { useEffect, useState } from 'react';
 export default function useDiscard () {
     const [discardCards, setDiscardCards] = useState([]);
 
-    useEffect(() => {
-        console.log(`Discard has ${discardCards.length} cards.`);
-    });
+    // useEffect(() => {
+    //     console.log(`Discard has ${discardCards.length} cards.`);
+    // });
 
     /**
      * Resets the discard.
@@ -29,7 +29,7 @@ export default function useDiscard () {
      * @returns A card if any exist, null if empty.
      */
     function discardDraw () {
-        console.log(`Drawing a card from the discard...`);
+        // console.log(`Drawing a card from the discard...`);
         const cardsClone = [...discardCards];
 
         if (cardsClone && cardsClone.length) {
@@ -44,7 +44,7 @@ export default function useDiscard () {
                 }
             }
             else {
-                console.log(`Cannot draw card ${topCard.name} of ${topCard.suit}.`);
+                // console.log(`Cannot draw card ${topCard.name} of ${topCard.suit}.`);
                 return {
                     discardCards: cardsClone,
                     cardDrawn: null

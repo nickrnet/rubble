@@ -17,9 +17,9 @@ export default function useDeck () {
     ]);
     const [maxCardsInSuit, setMaxCardsInSuit] = useState(13);
 
-    useEffect(() => {
-        console.log(`Deck has ${deckCards.length} cards.`);
-    });
+    // useEffect(() => {
+    //     console.log(`Deck has ${deckCards.length} cards.`);
+    // });
 
     function deckInit () {
         let cardsClone = [...deckCards];
@@ -27,10 +27,10 @@ export default function useDeck () {
             console.log(`Initializing deck.`);
             cardsClone.length = 0;
             deckSuits.map(suit => {
-                console.log(`Deck is ${cardsClone.length} cards.`);
-                console.log(`Adding ${maxCardsInSuit} cards of ${suit}...`);
+                // console.log(`Deck is ${cardsClone.length} cards.`);
+                // console.log(`Adding ${maxCardsInSuit} cards of ${suit}...`);
                 cardsClone = cardsClone.concat(generateSuit(suit, maxCardsInSuit));
-                console.log(`Deck is now ${cardsClone.length} cards.`);
+                // console.log(`Deck is now ${cardsClone.length} cards.`);
             });
             cardsClone = deckShuffle(7, cardsClone);
             return {
@@ -62,7 +62,7 @@ export default function useDeck () {
      * @returns {object} topCard A card if any exist, null if empty.
      */
     function deckDraw (deck = []) {
-        console.log(`Drawing a card from the deck...`);
+        // console.log(`Drawing a card from the deck...`);
         let cardsClone = [];
         if (deck && deck.length) {
             cardsClone = deck;
@@ -103,7 +103,7 @@ export default function useDeck () {
             cardsClone = [...deckCards];
         }
         
-        console.log(`Shuffling the deck...`);
+        // console.log(`Shuffling the deck...`);
         for (let time = 1; time <= times; time++) {
             for (i = cardsClone.length - 1; i > 0; i--) {
                 rando = Math.floor(Math.random() * (i + 1));
@@ -111,9 +111,9 @@ export default function useDeck () {
                 cardsClone[i] = {...cardsClone[rando]};
                 cardsClone[rando] = card;
             }
-            console.log(`Shuffled ${time} ${time === 1 ? 'time' : 'times'}.`);
+            // console.log(`Shuffled ${time} ${time === 1 ? 'time' : 'times'}.`);
         }
-        console.log(`Done shuffling the deck.`);
+        // console.log(`Done shuffling the deck.`);
         return cardsClone;
     }
 
