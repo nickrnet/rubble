@@ -4,38 +4,37 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 
 export default function Winner (
     {
-        newGameHandler,
         roundOver,
         roundWinner,
-        gameOver,
         gameWinner,
-        setRoundOver
+        setRoundOver,
+        endRound
     }
 ) {
 
     function closeHandler() {
-        newGameHandler(true);
         setRoundOver(false);
+        endRound();
     }
 
     return (
         <Dialog
-            open={ roundOver }
+            open={roundOver}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
                 <Typography>
-                    { `Round Over` }
+                    {gameWinner ? 'Game Over' : 'Round Over'}
                 </Typography>
             </DialogTitle>
             <DialogContent>
                 <Typography>
-                    { `${roundWinner} won!` }
+                    {`${roundWinner} won!`}
                 </Typography>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" onClick={ closeHandler }>
+                <Button variant="outlined" onClick={closeHandler}>
                     Continue
                 </Button>
             </DialogActions>

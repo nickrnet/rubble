@@ -3,10 +3,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Typography } from '@material-ui/core';
 
-import DeckController from '../Deck/DeckController';
-import DiscardController from '../Discard/DiscardController';
 import IndividualPlayerView from '../Player/IndividualPlayerView';
 import Winner from '../view/Winner';
+import DeckView from '../Deck/DeckView';
+import DiscardView from '../Discard/DiscardView';
 
 const useStyles = makeStyles(
     (theme) => (
@@ -27,17 +27,31 @@ const useStyles = makeStyles(
     )
 );
 
-export default function BoardView(
+function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard, playerPlaceCard, dealing) {
+    return (
+        <IndividualPlayerView
+            player={player}
+            isActive={isActive}
+            playerDrawFromDeck={playerDrawFromDeck}
+            playerDiscard={playerDiscard}
+            playerPlaceCard={playerPlaceCard}
+            dealing={dealing} />
+    );
+}
+
+export default function BoardView (
     {
-        players,
-        deck,
-        discard,
-        rounds,
-        drawFromDeckHandler,
-        drawFromDiscardHandler,
-        placeCardHandler,
-        stealCardHandler,
-        newGameHandler,
+        playersList,
+        deckCards,
+        discardCards,
+        round,
+        activePlayerIndex,
+        playerDrawFromDeck,
+        playerDiscard,
+        playerDrawFromDiscard,
+        playerPlaceCard,
+        dealing,
+        endRound,
         roundOver,
         setRoundOver,
         roundWinner,
@@ -48,41 +62,102 @@ export default function BoardView(
     const classes = useStyles();
 
     return (
-        <Paper elevation={3} className={classes.gameBoard}>
-            <Winner gameOver={gameOver} gameWinner={gameWinner} roundOver={roundOver} roundWinner={roundWinner} setRoundOver={setRoundOver} newGameHandler={newGameHandler} />
-            <Grid container direction="column" justify="center" alignItems="center" spacing={3}>
+        <Paper
+            elevation={3}
+            className={classes.gameBoard} >
+            <Winner
+                roundOver={roundOver}
+                setRoundOver={setRoundOver}
+                roundWinner={roundWinner}
+                gameOver={gameOver}
+                gameWinner={gameWinner}
+                endRound={endRound}
+                />
+            <Grid 
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                spacing={3} >
                 <Grid item>
-                    <Typography variant="h5" component="h1" className={classes.title} gutterBottom>
-                        Round {rounds}
+                    <Typography
+                        variant="h5"
+                        component="h1"
+                        className={classes.title}
+                        gutterBottom >
+                        Round {round}
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Grid container spacing={2} direction="row" justify="center" alignItems="center">
+                    <Grid
+                        container
+                        spacing={2}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center" >
                         <Grid item>
-                            <IndividualPlayerView player={players[0]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
+                            {generatePlayerView(
+                                playersList[0],
+                                activePlayerIndex == 0,
+                                playerDrawFromDeck,
+                                playerDiscard,
+                                playerPlaceCard,
+                                dealing)}
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[1]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
+                            <IndividualPlayerView
+                                player={playersList[1]}
+                                isActive={activePlayerIndex == 1}
+                                playerDrawFromDeck={playerDrawFromDeck}
+                                playerDiscard={playerDiscard}
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Grid container spacing={2} dicrection="row" justify="center" alignItems="center">
+                    <Grid
+                        container
+                        spacing={2}
+                        dicrection="row"
+                        justifyContent="center"
+                        alignItems="center" >
                         <Grid item>
-                            <DeckController deck={deck} drawFromDeckHandler={drawFromDeckHandler}/>
+                            <DeckView
+                                deckCards={deckCards}
+                                playerDrawFromDeck={playerDrawFromDeck} />
                         </Grid>
                         <Grid item>
-                            <DiscardController discard={discard} drawFromDiscardHandler={drawFromDiscardHandler}/>
+                            <DiscardView
+                                discardCards={discardCards}
+                                playerDrawFromDiscard={playerDrawFromDiscard} />
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Grid container spacing={2} direction="row" justify="center" alignItems="center">
+                    <Grid
+                        container
+                        spacing={2}
+                        direction="row"
+                        justifyContent="center"
+                        alignItems="center" >
                         <Grid item>
-                            <IndividualPlayerView player={players[2]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
+                            <IndividualPlayerView
+                                player={playersList[2]}
+                                isActive={activePlayerIndex == 2}
+                                playerDrawFromDeck={playerDrawFromDeck}
+                                playerDiscard={playerDiscard}
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                         <Grid item>
-                            <IndividualPlayerView player={players[3]} placeCardHandler={placeCardHandler} stealCardHandler={stealCardHandler} />
+                            <IndividualPlayerView
+                                player={playersList[3]}
+                                isActive={activePlayerIndex == 3}
+                                playerDrawFromDeck={playerDrawFromDeck}
+                                playerDiscard={playerDiscard}
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                     </Grid>
                 </Grid>

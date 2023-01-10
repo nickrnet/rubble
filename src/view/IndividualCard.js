@@ -4,19 +4,14 @@ import IndividualCardFront from './IndividualCardFront';
 import IndividualCardBack from './IndividualCardBack';
 
 export default function IndividualCard ({ card, slot, onClick }) {
-
-    function stealCard() {
-        onClick(slot);
-    }
-
     if (card.faceUp) {
         return (
-            <IndividualCardFront card={card} onClick={ stealCard }/>
+            <IndividualCardFront card={card} onClick={onClick}/>
         );
     }
     else {
         return (
-            <IndividualCardBack />
+            <IndividualCardBack onClick={onClick} />
         );
     }
 }

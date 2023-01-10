@@ -29,7 +29,7 @@ export default function IndividualCardBack ({ onClick }) {
                     component="img"
                     alt="Back of Card"
                     image="/logo192.png"
-                    disabled={!onClick}
+                    // disabled={!onClick}
                     title="Back of Card" />
             </CardActionArea>
         </Card>

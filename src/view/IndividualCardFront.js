@@ -20,13 +20,15 @@ const useStyles = makeStyles(
 
 function getCardImage (card) {
     let image;
-    if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(card.value)) {
-        image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}.png`;
+    if (card && card.name) {
+        if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(card.value)) {
+            image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}.png`;
+        }
+        else {
+            image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}2.png`;
+        }
+        return image;
     }
-    else {
-        image = `${card.name.toLowerCase()}_of_${card.suit.toLowerCase()}2.png`;
-    }
-    return image;
 
 }
 

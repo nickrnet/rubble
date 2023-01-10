@@ -11,10 +11,11 @@ The development of Garbage has the following flow:
 
 ## Setup
 
-If NodeJS (Node) needs to be installed, we recommend `nvm` to manage versions. It is available at https://github.com/nvm-sh/nvm.
+If NodeJS (Node) needs to be installed, we recommend `nvm` to manage versions. It is available at https://github.com/nvm-sh/nvm. In general, the latest LTS version should be used.
 
 Run
-
+    nvm install v18.12.1
+    nvm use v18.12.1
     npm install
 
 in the `rubble` directory after cloning your fork to get what is needed to work on local code.
@@ -25,6 +26,7 @@ Using any text editor, open the `rubble` directory in it.
 
 The structure is as follows:
 
+```
     rubble
     ├── doc
     ├── public
@@ -32,13 +34,15 @@ The structure is as follows:
         ├── Board
         ├── Deck
         ├── Discard
+        ├── Game
         ├── Player
-        ├── __tests__
-        └── view
+        ├── view
+        └── __tests__
+```
 
 If creating a new component for user interface (UI), create a subdirectory in `src`. If creating a new module with no UI, place its Javascript Node module in `src`.
 
-An example of a Node module is `src/Player.js`. An example of a UI component is `src/BoardView.js` with its corresponding controller.
+An example of a Node module is `src/Player.js`. An example of a UI component is `src/BoardView.js` with its corresponding controller. Common view components should be placed in the `view` directory.
 
 ## Tests
 
