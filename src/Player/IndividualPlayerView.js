@@ -91,7 +91,8 @@ export default function IndividualPlayerView(
         isActive,
         playerDrawFromDeck,
         playerDiscard,
-        playerPlaceCard
+        playerPlaceCard,
+        dealing
     }
 ) {
 
@@ -99,7 +100,7 @@ export default function IndividualPlayerView(
 
     return (
         <Grid item>
-            <Paper className={isActive ? classes.activePlayerCard : classes.inactivePlayerCard}>
+            <Paper className={isActive && !dealing ? classes.activePlayerCard : classes.inactivePlayerCard}>
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={3}>
                     <Grid item>
                         <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>

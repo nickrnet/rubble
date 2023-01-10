@@ -22,10 +22,9 @@ export default function useDeck () {
     // });
 
     function deckInit () {
-        let cardsClone = [...deckCards];
+        let cardsClone = [];
         if (!deckInitialized) {
             console.log(`Initializing deck.`);
-            cardsClone.length = 0;
             deckSuits.map(suit => {
                 // console.log(`Deck is ${cardsClone.length} cards.`);
                 // console.log(`Adding ${maxCardsInSuit} cards of ${suit}...`);
@@ -51,7 +50,7 @@ export default function useDeck () {
      * Resets this deck to 52 cards, shuffled.
      */
     function deckReset () {
-        let cardsClone = [...deckCards];
+        console.log('Resetting deck.');
         const initResponse = deckInit();
         setDeckCards(initResponse.deckCards);
         setDeckInitialized(initResponse.deckInitialized);
@@ -63,13 +62,14 @@ export default function useDeck () {
      */
     function deckDraw (deck = []) {
         // console.log(`Drawing a card from the deck...`);
-        let cardsClone = [];
-        if (deck && deck.length) {
-            cardsClone = deck;
-        }
-        else {
-            cardsClone = [...deckCards];
-        }
+        // let cardsClone = [];
+        // if (deck && deck.length) {
+        //     cardsClone = deck;
+        // }
+        // else {
+        //     cardsClone = [...deckCards];
+        // }
+        let cardsClone = [...deckCards];
         
         if (cardsClone && cardsClone.length) {
             let topCard = cardsClone.shift();
@@ -80,7 +80,7 @@ export default function useDeck () {
         } else {
             console.log(`No cards left to draw from in the deck.`);
             return {
-                deckCards: cardsClone,
+                deckCards: [],
                 cardDrawn: null
             };
         }

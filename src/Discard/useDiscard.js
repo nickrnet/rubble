@@ -17,6 +17,7 @@ export default function useDiscard () {
      * Resets the discard.
      */
     function resetDiscard () {
+        console.log('Resetting discard pile.');
         const cardsClone = [...discardCards];
         cardsClone.length = 0;
         return {

@@ -27,14 +27,15 @@ const useStyles = makeStyles(
     )
 );
 
-function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard, playerPlaceCard) {
+function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard, playerPlaceCard, dealing) {
     return (
         <IndividualPlayerView
             player={player}
             isActive={isActive}
             playerDrawFromDeck={playerDrawFromDeck}
             playerDiscard={playerDiscard}
-            playerPlaceCard={playerPlaceCard} />
+            playerPlaceCard={playerPlaceCard}
+            dealing={dealing} />
     );
 }
 
@@ -49,12 +50,13 @@ export default function BoardView (
         playerDiscard,
         playerDrawFromDiscard,
         playerPlaceCard,
+        dealing,
         endRound,
         roundOver,
         setRoundOver,
         roundWinner,
         gameOver,
-        gameWinner,
+        gameWinner
     }
 ) {
     const classes = useStyles();
@@ -99,7 +101,8 @@ export default function BoardView (
                                 activePlayerIndex == 0,
                                 playerDrawFromDeck,
                                 playerDiscard,
-                                playerPlaceCard)}
+                                playerPlaceCard,
+                                dealing)}
                         </Grid>
                         <Grid item>
                             <IndividualPlayerView
@@ -107,7 +110,8 @@ export default function BoardView (
                                 isActive={activePlayerIndex == 1}
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
-                                playerPlaceCard={playerPlaceCard} />
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -143,7 +147,8 @@ export default function BoardView (
                                 isActive={activePlayerIndex == 2}
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
-                                playerPlaceCard={playerPlaceCard} />
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                         <Grid item>
                             <IndividualPlayerView
@@ -151,7 +156,8 @@ export default function BoardView (
                                 isActive={activePlayerIndex == 3}
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
-                                playerPlaceCard={playerPlaceCard} />
+                                playerPlaceCard={playerPlaceCard}
+                                dealing={dealing} />
                         </Grid>
                     </Grid>
                 </Grid>

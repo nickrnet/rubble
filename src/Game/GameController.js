@@ -27,23 +27,31 @@ export default function GameController() {
     const [round, setRound] = useState(0);
 
     useEffect(() => {
-        initializeGame();
-    }, [deckInitialized, playersInitialized]);
+        initializeDeck();
+    }, [deckInitialized]);
 
-    function initializeGame () {
+    useEffect(() => {
+        initializePlayers();
+    }, [playersInitialized]);
+
+    function initializeDeck () {
         if (!deckInitialized) {
+            console.log(`Initializing deck.`);
             const newDeck = deckInit();
             setDeckInitialized(newDeck.deckInitialized);
             setDeckCards(newDeck.deckCards);
         }
+    }
+
+    function initializePlayers () {
         if (!playersInitialized) {
             const newPlayersList = playersInit();
+            console.log(`Active player: ${newPlayersList.playersList[activePlayerIndex].playerName}.`);
             setPlayersInitialized(newPlayersList.playersInitialized);
             setPlayersList(newPlayersList.playersList);
             setActivePlayerIndex(newPlayersList.activePlayerIndex);
             setRound(1);
         }
-        console.log(`Active player: ${playersList && playersList.length ? playersList[activePlayerIndex].playerName : 'unknown'}`);
     }
 
     return (
