@@ -1,0 +1,41 @@
+Garbage Game Rules
+Setup:
+One or more Deck(s) of Cards, Jokers removed.
+Designate a dealer, whose responsibilities will be passed to the left after each round.
+Deal 10 cards, facedown to each player.
+Assemble into two rows of 5 (2x5 grid).
+
+Gameplay:
+The aim of the game is to fill each of the facedown card slots with the corresponding card, Ace through 10. (Ace-5 is the top row, 6-10 is the bottom row).
+Each turn, the player will either draw a card from the deck or draw the top card of the discard depending on its value (See Specific Rules).
+Then, play the card in its corresponding place in the grid. If there is no place available in the grid, discard the card and pass your turn.
+If the card was played, flip the facedown card that the played card replaced in the grid. You may now play that card. 
+  If there is no place available in the grid, discard the card and pass your turn.
+Once you have filled the grid with the corresponding cards, the round is over.
+In the next round, the winner of the previous round is dealt one fewer card in their grid (The winner will have a grid from 1-9 whereas other players have a grid from 1-10).
+The player to the left of the previous winner starts the new round.
+The game ends when a. one player has only one slot left (won 9 rounds) and b. fills it with an Ace.
+
+Specific Rules:
+The face cards have different abilities than the number cards.
+
+King:
+The King is a wild card and may be played on any available slot in the grid.
+The King cannot fill the ace slot of the final round (player has only one slot left).
+Discarded Kings cannot be taken out of the discard.
+Kings can be replaced by a number card corresponding to the space occupied, and played again as if it had been drawn.
+
+Queen:
+The Queen is a steal card.
+The player of the Queen selects a card from any of their opponent(s) played cards and replaces it with the Queen, taking the number and playing it in their own grid.
+A player may have any number of cards in their grid replaced by Queens.
+A player cannot win the given round if there is a Queen within their grid.
+Queens can be taken out of a grid, and played as if they had been drawn, if the player plays a number that corresponds with the space the Queen occupies.
+Kings may replace Queens, which are played as if they had been drawn.
+The Queen may not steal a King from an opponent.
+If the opponent(s) do not have any cards played, then the Queen is discarded and the turn is passed.
+A discarded Queen may be taken from the discard and played.
+
+Jack:
+The jack has no use.
+Jacks must be immediately discarded, and the turn is passed.
