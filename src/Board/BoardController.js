@@ -385,13 +385,6 @@ export default function BoardController(
         else {
             setActivePlayerIndex(0);
         }
-        
-        // setAutoPlayerShouldDrawFromDiscard(false);
-        // setAutoPlayerShouldDrawFromDeck(false);
-        // setAutoPlayerDrew(false);
-        // setAutoPlayerCheckCard(false);
-        // setAutoPlayerPlayCard(false);
-        // setAutoPlayerDiscardCard(false);
         setDealing(true);
     }
 
