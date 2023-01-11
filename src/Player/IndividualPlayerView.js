@@ -6,6 +6,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import LocalPlay from '@material-ui/icons/LocalPlay';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 
 import EmptyCardSlot from '../view/EmptyCardSlot';
 import IndividualCard from '../view/IndividualCard';
@@ -92,11 +93,16 @@ export default function IndividualPlayerView(
         playerDrawFromDeck,
         playerDiscard,
         playerPlaceCard,
-        dealing
+        dealing,
+        setViewHelp
     }
 ) {
 
     const classes = useStyles();
+
+    function handleViewHelp () {
+        setViewHelp(true);
+    }
 
     return (
         <Grid item>
@@ -105,7 +111,7 @@ export default function IndividualPlayerView(
                     <Grid item>
                         <Grid container direction="row" justifyContent="center" alignItems="center" spacing={1}>
                             <Grid item>
-                                <FormGroup>
+                                <FormGroup row>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -113,6 +119,9 @@ export default function IndividualPlayerView(
                                                 checked={player ? player.isAuto : true} />
                                         }
                                         label={player ? player.playerName : ''} />
+                                    {player && !player.isAuto ? 
+                                        <FormControlLabel control={<HelpCenterIcon onClick={handleViewHelp}/>} /> :
+                                        <div></div>}
                                 </FormGroup>
                             </Grid>
                         </Grid>

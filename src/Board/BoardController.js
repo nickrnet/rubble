@@ -42,6 +42,8 @@ export default function BoardController(
     const [autoPlayerPlayCard, setAutoPlayerPlayCard] = useState(false);
     const [autoPlayerDiscardCard, setAutoPlayerDiscardCard] = useState(false);
 
+    const [viewHelp, setViewHelp] = useState(true);
+
     const logAutoPlayerMoves = true;
 
     useEffect(() => {
@@ -484,5 +486,7 @@ export default function BoardController(
         roundWinner={roundWinner}
         gameOver={gameOver}
         gameWinner={gameWinner}
+        viewHelp={viewHelp}
+        setViewHelp={setViewHelp}
     />;
 }
