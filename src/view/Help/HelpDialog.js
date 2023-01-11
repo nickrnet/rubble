@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@material-ui/core';
+import { Dialog, DialogContent, DialogTitle, Typography } from '@material-ui/core';
 
 import HelpStepper from './HelpStepper';
 

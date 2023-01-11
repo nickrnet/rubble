@@ -5,12 +5,10 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import LocalPlay from '@material-ui/icons/LocalPlay';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 
 import EmptyCardSlot from '../view/EmptyCardSlot';
 import IndividualCard from '../view/IndividualCard';
-import { CheckBox } from '@material-ui/icons';
 
 const useStyles = makeStyles(
     (theme) => (
