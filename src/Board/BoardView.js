@@ -7,6 +7,7 @@ import IndividualPlayerView from '../Player/IndividualPlayerView';
 import Winner from '../view/Winner';
 import DeckView from '../Deck/DeckView';
 import DiscardView from '../Discard/DiscardView';
+import HelpDialog from '../view/Help/HelpDialog';
 
 const useStyles = makeStyles(
     (theme) => (
@@ -27,7 +28,7 @@ const useStyles = makeStyles(
     )
 );
 
-function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard, playerPlaceCard, dealing) {
+function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard, playerPlaceCard, dealing, setViewHelp) {
     return (
         <IndividualPlayerView
             player={player}
@@ -35,7 +36,8 @@ function generatePlayerView(player, isActive, playerDrawFromDeck, playerDiscard,
             playerDrawFromDeck={playerDrawFromDeck}
             playerDiscard={playerDiscard}
             playerPlaceCard={playerPlaceCard}
-            dealing={dealing} />
+            dealing={dealing}
+            setViewHelp={setViewHelp} />
     );
 }
 
@@ -56,7 +58,9 @@ export default function BoardView (
         setRoundOver,
         roundWinner,
         gameOver,
-        gameWinner
+        gameWinner,
+        viewHelp,
+        setViewHelp
     }
 ) {
     const classes = useStyles();
@@ -73,6 +77,9 @@ export default function BoardView (
                 gameWinner={gameWinner}
                 endRound={endRound}
                 />
+            <HelpDialog
+                viewHelp={viewHelp}
+                setViewHelp={setViewHelp} />
             <Grid 
                 container
                 direction="column"
@@ -102,7 +109,8 @@ export default function BoardView (
                                 playerDrawFromDeck,
                                 playerDiscard,
                                 playerPlaceCard,
-                                dealing)}
+                                dealing,
+                                setViewHelp)}
                         </Grid>
                         <Grid item>
                             <IndividualPlayerView
@@ -111,7 +119,8 @@ export default function BoardView (
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
                                 playerPlaceCard={playerPlaceCard}
-                                dealing={dealing} />
+                                dealing={dealing}
+                                setViewHelp={setViewHelp} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -148,7 +157,8 @@ export default function BoardView (
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
                                 playerPlaceCard={playerPlaceCard}
-                                dealing={dealing} />
+                                dealing={dealing}
+                                setViewHelp={setViewHelp} />
                         </Grid>
                         <Grid item>
                             <IndividualPlayerView
@@ -157,7 +167,8 @@ export default function BoardView (
                                 playerDrawFromDeck={playerDrawFromDeck}
                                 playerDiscard={playerDiscard}
                                 playerPlaceCard={playerPlaceCard}
-                                dealing={dealing} />
+                                dealing={dealing}
+                                setViewHelp={setViewHelp} />
                         </Grid>
                     </Grid>
                 </Grid>
