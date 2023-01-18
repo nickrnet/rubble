@@ -72,6 +72,7 @@ export default function GameController() {
                 setPlayersList={setPlayersList}
                 playersReset={playersReset}
                 playersInitialized={playersInitialized}
+                initializePlayers={initializePlayers}
                 setPlayersInitialized={setPlayersInitialized}
                 round={round}
                 setRound={setRound}
