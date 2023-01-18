@@ -46,7 +46,7 @@ export default function BoardController(
 
     const [viewHelp, setViewHelp] = useState(true);
 
-    const logAutoPlayerMoves = true;
+    const logAutoPlayerMoves = false;
     const logDealing = false;
 
     useEffect(() => {
@@ -228,8 +228,9 @@ export default function BoardController(
                     setAutoPlayerCheckCard(false);
                     const playerCardValue = playerCard.value;
                     const slotCard = player.cards[playerCardValue-1];
-                    if (playerCardValue <= player.slots) {
-                        if (slotCard && !slotCard.faceUp) {
+                    if (playerCardValue === 13 || playerCardValue <= player.slots) {
+                        // Check for King or playable card
+                        if (playerCardValue === 13 || (slotCard && !slotCard.faceUp)) {
                             if (logAutoPlayerMoves) {
                                 console.log(`Auto player ${player.playerName} should play their card.`);
                             }
@@ -257,10 +258,20 @@ export default function BoardController(
         const player = playersList[activePlayerIndex];
         if (player && player.card) {
             if (autoPlayerPlayCard) {
+                let cardSlot = player.card.value-1;
                 if (logAutoPlayerMoves && player.card) {
                     console.log(`Auto player ${player.playerName} is playing their ${player.card.name} of ${player.card.suit} card.`);
                 }
-                playerPlaceCard(player.card.value-1);
+                if (player.card.value === 13) {
+                    // Find first face down slot
+                    for (let i = 0; i < player.cards.length; i++) {
+                        if (!player.cards[i].faceUp) {
+                            cardSlot = i;
+                            break;
+                        }
+                    }
+                }
+                playerPlaceCard(cardSlot);
                 setAutoPlayerPlayCard(false);
                 setAutoPlayerDrew(true);
             }
