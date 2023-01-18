@@ -17,6 +17,8 @@ export default function BoardController(
         setPlayersList,
         playersReset,
         playersInitialized,
+        initializePlayers,
+        setPlayersInitialized,
         round,
         setRound,
         activePlayerIndex,
@@ -45,19 +47,17 @@ export default function BoardController(
     const [viewHelp, setViewHelp] = useState(true);
 
     const logAutoPlayerMoves = true;
+    const logDealing = false;
 
     useEffect(() => {
         if (deckInitialized && playersInitialized) {
-            console.log(`Dealing cards to players.`);
             setDealing(true);
             dealPlayers();
         }
     }, [deckInitialized, playersInitialized]);
 
     useEffect(() => {
-        console.log('Starting checkPlayerSlots');
         if (checkPlayerSlots) {
-            console.log('checkPlayerSlots TRUE');
             const currentPlayer = playersList[activePlayerIndex];
             if (currentPlayer.cards.length <= currentPlayer.slots) {
                 setCheckPlayerSlots(false);
@@ -130,12 +130,40 @@ export default function BoardController(
     }, [resetPlayers]);
 
     useEffect(() => {
+        if (gameWinner) {
+            setPlayersInitialized(false);
+        }
+    }, [gameWinner]);
+
+    useEffect(() => {
         const player = playersList[activePlayerIndex];
-        if (player && player.isAuto) {
-            if (logAutoPlayerMoves) {
-                console.log(`Found auto player ${player.playerName}.`);
+        if (player) {
+            if (player.isAuto) {
+                if (logAutoPlayerMoves) {
+                    console.log(`Found auto player ${player.playerName}.`);
+                }
+                playAutoTurn();
             }
-            playAutoTurn();
+            else {
+                console.log(`Found real player ${player.playerName}.`);
+                let discardCanBeDrawn = false;
+                if (discardCards.length) {
+                    const lastDiscardedCard = discardCards[discardCards.length-1];
+                    const lastDiscardedCardValue = lastDiscardedCard.value;
+                    if (lastDiscardedCardValue <= 10 && 
+                        player.slots >= lastDiscardedCardValue && 
+                        player.cards[lastDiscardedCardValue-1] &&
+                        !player.cards[lastDiscardedCardValue-1].faceUp) {
+                            discardCanBeDrawn = true;
+                        }
+                }
+                if (!discardCanBeDrawn && deckCards.length === 0) {
+                    // Deck is empty, new round
+                    console.log('Deck empty. New round.');
+                    setRoundOver(true);
+                    setRoundWinner('No one');
+                }
+            }
         }
     }, [activePlayerIndex]);
 
@@ -157,12 +185,20 @@ export default function BoardController(
         const player = playersList[activePlayerIndex];
         if (player) {
             if (autoPlayerShouldDrawFromDeck) {
-                if (logAutoPlayerMoves) {
-                    console.log(`Auto player ${player.playerName} is drawing from the deck.`);
-                }
-                playerDrawFromDeck();
                 setAutoPlayerShouldDrawFromDeck(false);
-                setAutoPlayerDrew(true);
+                if (deckCards.length) {
+                    if (logAutoPlayerMoves) {
+                        console.log(`Auto player ${player.playerName} is drawing from the deck.`);
+                    }
+                    playerDrawFromDeck();
+                    setAutoPlayerDrew(true);
+                }
+                else {
+                    // Deck is empty, new round
+                    console.log('Deck empty. New round.');
+                    setRoundOver(true);
+                    setRoundWinner('No one');
+                }
             }
         }
     }, [autoPlayerShouldDrawFromDeck]);
@@ -250,15 +286,16 @@ export default function BoardController(
     }
 
     function dealPlayerACard () {
-        console.log(`DEALING: ${dealing}`);
-        if (deckCards && deckCards.length) {
+        if (deckCards && deckCards.length && dealing) {
             const playersListClone = [...playersList];
             const player = {...playersListClone[activePlayerIndex]};
             if (player.cards.length < player.slots) {
                 const draw = deckDraw();
                 player.cards.push({...draw.cardDrawn});
                 playersListClone[activePlayerIndex] = {...player};
-                console.log(`Dealt a ${draw.cardDrawn.name} of ${draw.cardDrawn.suit} to ${player.playerName} in slot ${player.cards.length}.`);
+                if (logDealing) {
+                    console.log(`Dealt a ${draw.cardDrawn.name} of ${draw.cardDrawn.suit} to ${player.playerName} in slot ${player.cards.length}.`);
+                }
                 setPlayersList(playersListClone);
                 setDeckCards(draw.deckCards);
                 setCheckPlayerSlots(false);
@@ -268,53 +305,42 @@ export default function BoardController(
     }
 
     function playerDrawFromDeck () {
-        const deckCardsClone = [...deckCards];
-        const playersListClone = [...playersList];
-        const player = {...playersListClone[activePlayerIndex]};
-        if (!player.card) {
-            if (deckCardsClone && deckCardsClone.length) {
-                const draw = deckDraw();
-                player.card = {...draw.cardDrawn};
-                player.card.faceUp = true;
-                playersListClone[activePlayerIndex] = {...player};
-                setPlayersList(playersListClone);
-                setDeckCards(draw.deckCards);
-            }
-            else {
-                console.log(`No cards to draw from.`);
-            }
-            setDealing(false);
-        }
-        else {
-            console.log(`Player already has a card.`);
-        }
-    }
-
-    function playerDrawFromDiscard () {
-        const playersListClone = [...playersList];
-        const player = {...playersListClone[activePlayerIndex]};
-        const discardCardsClone = [...discardCards];
-        if (!player.card) {
-            if (discardCardsClone && discardCardsClone.length) {
-                const topDiscard = discardCardsClone[discardCardsClone.length-1];
-                if (topDiscard.value <= 10) {
-                    const draw = discardDraw();
+        if (!dealing) {
+            const deckCardsClone = [...deckCards];
+            const playersListClone = [...playersList];
+            const player = {...playersListClone[activePlayerIndex]};
+            if (!player.card) {
+                if (deckCardsClone && deckCardsClone.length) {
+                    const draw = deckDraw();
                     player.card = {...draw.cardDrawn};
                     player.card.faceUp = true;
                     playersListClone[activePlayerIndex] = {...player};
                     setPlayersList(playersListClone);
-                    setDiscardCards(draw.discardCards);
+                    setDeckCards(draw.deckCards);
                 }
-                else {
-                    console.log(`Cannot draw ${topDiscard.name}.`);
-                }
-            }
-            else {
-                console.log(`No discard cards to draw from.`);
+                setDealing(false);
             }
         }
-        else {
-            console.log(`Player already has a card.`);
+    }
+
+    function playerDrawFromDiscard () {
+        if (!dealing) {
+            const playersListClone = [...playersList];
+            const player = {...playersListClone[activePlayerIndex]};
+            const discardCardsClone = [...discardCards];
+            if (!player.card) {
+                if (discardCardsClone && discardCardsClone.length) {
+                    const topDiscard = discardCardsClone[discardCardsClone.length-1];
+                    if (topDiscard.value <= 10) {
+                        const draw = discardDraw();
+                        player.card = {...draw.cardDrawn};
+                        player.card.faceUp = true;
+                        playersListClone[activePlayerIndex] = {...player};
+                        setPlayersList(playersListClone);
+                        setDiscardCards(draw.discardCards);
+                    }
+                }
+            }
         }
     }
 
@@ -417,12 +443,6 @@ export default function BoardController(
                 setRoundWinner(currentPlayer.playerName);
             }
         }
-        else if (!deckCards.length) {
-            // Deck is empty, new round
-            console.log('Deck empty. New round.');
-            setRoundOver(true);
-            setRoundWinner('No one');
-        }
         // Next player's turn
         else if (activePlayerIndex < playersList.length-1) {
             setActivePlayerIndex(activePlayerIndex+1);
@@ -456,16 +476,13 @@ export default function BoardController(
                     setAutoPlayerShouldDrawFromDeck(true);
                 }
             }
-            // Draw
-            else if (deckCards.length) {
+            // Try to draw
+            else if (player && player.isAuto && deckCards.length) {
                 if (logAutoPlayerMoves) {
                     console.log('Auto player should draw card from the deck.');
                 }
                 setAutoPlayerShouldDrawFromDeck(true);
             }
-        }
-        else {
-            console.log('Currently dealing, nothing to do.');
         }
     }
 

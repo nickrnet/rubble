@@ -11,6 +11,9 @@ const useStyles = makeStyles (
         {
             title: {
                 fontSize: 24
+            },
+            subHeader: {
+                fontSize: 12
             }
         }
     )
@@ -29,6 +32,7 @@ export default function DeckView (
         <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={ 2 }>
             <Grid item>
                 <Typography variant="h6" component="h1" className={ classes.title } gutterBottom>Deck</Typography>
+                <Typography variant="h6" component="h1" className={ classes.subHeader } gutterBottom>{deckCards.length} remaining</Typography>
             </Grid>
             <Grid item>
                 { deckCards.length ? 

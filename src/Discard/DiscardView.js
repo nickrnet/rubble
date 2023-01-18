@@ -11,6 +11,9 @@ const useStyles = makeStyles(
         {
             title: {
                 fontSize: 24
+            },
+            subHeader: {
+                fontSize: 12
             }
         }
     )
@@ -38,6 +41,7 @@ export default function DiscardView (
         <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={2}>
             <Grid item>
                 <Typography variant="h6" component="h1" className={classes.title} gutterBottom>Discard</Typography>
+                <Typography variant="h6" component="h1" className={classes.subHeader} gutterBottom>Contains {discardCards.length}</Typography>
             </Grid>
         <Grid item>
             <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
